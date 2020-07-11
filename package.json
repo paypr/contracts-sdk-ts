@@ -1,6 +1,6 @@
 {
   "author": "The Paypr Company",
-  "name": "@paypr/CHANGEME",
+  "name": "@paypr/contracts-sdk-ts",
   "description": "",
   "private": true,
   "license": "UNLICENSED",
@@ -8,10 +8,10 @@
   "homepage": "https://paypr.money/",
   "repository": {
     "type": "git",
-    "url": "https://github.com/paypr/CHANGEME"
+    "url": "https://github.com/paypr/contracts-sdk-ts"
   },
   "bugs": {
-    "url": "https://github.com/paypr/CHANGEME/issues"
+    "url": "https://github.com/paypr/contracts-sdk-ts/issues"
   },
   "scripts": {
     "clean": "rm -rf dist && rm -rf out",
@@ -60,7 +60,7 @@
     }
   },
   "standard-version": {
-    "issueUrlFormat": "https://github.com/paypr/CHANGEME/issues/{{id}}",
+    "issueUrlFormat": "https://github.com/paypr/contracts-sdk-ts/issues/{{id}}",
     "issuePrefixes": [
       "#"
     ],

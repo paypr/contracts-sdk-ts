@@ -1,4 +1,4 @@
-# CHANGEME
+# Contracts SDK for Typescript and JavaScript
 
 ## Setup
 
