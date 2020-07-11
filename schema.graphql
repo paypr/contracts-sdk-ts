@@ -1,0 +1,675 @@
+"""
+Exposes a URL that specifies the behaviour of this scalar.
+"""
+directive @specifiedBy(
+  """
+  The URL that specifies the behaviour of this scalar.
+  """
+  url: String!
+) on SCALAR
+
+type Account implements BaseModel {
+  id: ID!
+  createdAt: ISODateTime!
+  updatedAt: ISODateTime!
+  name: String!
+  nickname: String!
+  hasPaymentInfo: Boolean!
+  balance: Float
+  apiKeys: ApiKeyConnection!
+  contracts(contractType: ContractType): ContractConnection!
+  submissions(currentStatus: SubmissionStatus, onlyInProgress: Boolean): SubmissionConnection!
+  players: PlayerConnection!
+  transactions: TransactionConnection!
+}
+
+type ActivityContract implements BaseModel & BaseAccountModel & Contract & BaseContract & DisableableContract & SkillConstrained & ConsumableConsumer & ConsumableProvider {
+  id: ID!
+  createdAt: ISODateTime!
+  updatedAt: ISODateTime!
+  contractType: ContractType!
+  version: Int!
+  address: ContractAddress!
+  discoverable: Boolean!
+  name: String!
+  description: String!
+  uri: String!
+  account: String!
+  requiredSkills: [SkillLevel!]!
+  requiredConsumables: [ConsumableAmount!]!
+  providedConsumables: [ConsumableAmount!]!
+  disabled: Boolean!
+}
+
+type ApiKey implements BaseModel & BaseAccountModel {
+  id: ID!
+  createdAt: ISODateTime!
+  updatedAt: ISODateTime!
+  lastUsedAt: ISODateTime
+}
+
+"""
+Contains a list of items of a particular type
+"""
+type ApiKeyConnection {
+  """
+  The page information
+  """
+  pageInfo: PageInfo!
+
+  """
+  The list of edges
+  """
+  edges: [ApiKeyEdge!]!
+
+  """
+  The total number of items
+  """
+  total: Int!
+}
+
+"""
+A single edge of a connection, containing the item and its cursor
+"""
+type ApiKeyEdge {
+  """
+  The item in the list
+  """
+  node: ApiKey!
+
+  """
+  The cursor at this item, for use in pagination
+  """
+  cursor: String!
+}
+
+type ArtifactContract implements BaseModel & BaseAccountModel & Contract & BaseContract & DisableableContract & ConsumableProvider {
+  id: ID!
+  createdAt: ISODateTime!
+  updatedAt: ISODateTime!
+  contractType: ContractType!
+  version: Int!
+  address: ContractAddress!
+  discoverable: Boolean!
+  name: String!
+  description: String!
+  uri: String!
+  account: String!
+  baseUri: String!
+  symbol: String!
+  initialUses: Int!
+  providedConsumables: [ConsumableAmount!]!
+  disabled: Boolean!
+}
+
+interface BaseAccountModel {
+  id: ID!
+  createdAt: ISODateTime!
+  updatedAt: ISODateTime!
+}
+
+interface BaseContract {
+  id: ID!
+  createdAt: ISODateTime!
+  updatedAt: ISODateTime!
+  contractType: ContractType!
+  version: Int!
+  address: ContractAddress!
+  discoverable: Boolean!
+  name: String!
+  description: String!
+  uri: String!
+  account: String!
+}
+
+interface BaseModel {
+  id: ID!
+  createdAt: ISODateTime!
+  updatedAt: ISODateTime!
+}
+
+type ConsumableAmount {
+  consumable: ConsumableContract!
+  amount: Float!
+}
+
+input ConsumableAmountInput {
+  consumable: ConsumableReferenceInput!
+  amount: Float!
+}
+
+interface ConsumableConsumer {
+  requiredConsumables: [ConsumableAmount!]!
+}
+
+type ConsumableContract implements BaseModel & BaseAccountModel & Contract & BaseContract & DisableableContract {
+  id: ID!
+  createdAt: ISODateTime!
+  updatedAt: ISODateTime!
+  contractType: ContractType!
+  version: Int!
+  address: ContractAddress!
+  discoverable: Boolean!
+  name: String!
+  description: String!
+  uri: String!
+  account: String!
+  symbol: String!
+  exchangeRate: Int!
+  disabled: Boolean!
+}
+
+interface ConsumableProvider {
+  providedConsumables: [ConsumableAmount!]!
+}
+
+input ConsumableReferenceInput {
+  id: ID!
+}
+
+interface Contract {
+  id: ID!
+  createdAt: ISODateTime!
+  updatedAt: ISODateTime!
+  contractType: ContractType!
+  version: Int!
+  address: ContractAddress!
+  discoverable: Boolean!
+}
+
+scalar ContractAddress
+
+"""
+Contains a list of items of a particular type
+"""
+type ContractConnection {
+  """
+  The page information
+  """
+  pageInfo: PageInfo!
+
+  """
+  The list of edges
+  """
+  edges: [ContractEdge!]!
+
+  """
+  The total number of items
+  """
+  total: Int!
+}
+
+"""
+A single edge of a connection, containing the item and its cursor
+"""
+type ContractEdge {
+  """
+  The item in the list
+  """
+  node: Contract!
+
+  """
+  The cursor at this item, for use in pagination
+  """
+  cursor: String!
+}
+
+input ContractInfoInput {
+  name: String!
+  description: String
+}
+
+enum ContractType {
+  """
+  Activity contract
+  """
+  Activity
+
+  """
+  Artifact contract
+  """
+  Artifact
+
+  """
+  Consumable contract
+  """
+  Consumable
+
+  """
+  Skill contract
+  """
+  Skill
+
+  """
+  Skill-constrained Activity contract
+  """
+  SkillConstrainedActivity
+}
+
+input CreateActivityInput {
+  info: ContractInfoInput!
+  requiredSkills: [SkillLevelInput!]
+  requiredConsumables: [ConsumableAmountInput!]!
+  providedConsumables: [ConsumableAmountInput!]!
+  discoverable: Boolean
+}
+
+type CreateActivityResponse {
+  submission: Submission!
+}
+
+type CreateApiKeyResponse {
+  apiKey: ApiKey!
+  secretKey: String!
+}
+
+input CreateArtifactInput {
+  info: ContractInfoInput!
+  symbol: String
+  providedConsumables: [ConsumableAmountInput!]!
+  initialUses: Int
+  discoverable: Boolean
+}
+
+type CreateArtifactResponse {
+  submission: Submission!
+}
+
+input CreateConsumableInput {
+  info: ContractInfoInput!
+  symbol: String
+  exchangeRate: Int!
+  discoverable: Boolean
+}
+
+type CreateConsumableResponse {
+  submission: Submission!
+}
+
+input CreatePlayerInput {
+  name: String!
+}
+
+type CreatePlayerResponse {
+  submission: Submission!
+}
+
+input CreateSkillInput {
+  info: ContractInfoInput!
+  requiredSkills: [SkillLevelInput!]
+  requiredConsumables: [ConsumableAmountInput!]!
+  discoverable: Boolean
+}
+
+type CreateSkillResponse {
+  submission: Submission!
+}
+
+type DeleteApiKeyResponse {
+  status: DeleteApiKeyStatus
+}
+
+enum DeleteApiKeyStatus {
+  """
+  API key successfully deleted
+  """
+  Success
+
+  """
+  API key not found
+  """
+  InvalidApiKey
+}
+
+interface DisableableContract {
+  disabled: Boolean!
+}
+
+type DisableContractResponse {
+  submission: Submission!
+}
+
+type EnableContractResponse {
+  submission: Submission!
+}
+
+type EstimateActivityResponse implements GasEstimateResponse {
+  gasAmount: Int!
+  gasCost: Float!
+  balance: Float!
+  prepayCharge: Float
+}
+
+type EstimateArtifactResponse implements GasEstimateResponse {
+  gasAmount: Int!
+  gasCost: Float!
+  balance: Float!
+  prepayCharge: Float
+}
+
+type EstimateConsumableResponse implements GasEstimateResponse {
+  gasAmount: Int!
+  gasCost: Float!
+  balance: Float!
+  prepayCharge: Float
+}
+
+type EstimateCreatePlayerResponse implements GasEstimateResponse {
+  gasAmount: Int!
+  gasCost: Float!
+  balance: Float!
+  prepayCharge: Float
+}
+
+type EstimateSkillResponse implements GasEstimateResponse {
+  gasAmount: Int!
+  gasCost: Float!
+  balance: Float!
+  prepayCharge: Float
+}
+
+interface GasEstimateResponse {
+  gasAmount: Int!
+  gasCost: Float!
+  balance: Float!
+  prepayCharge: Float
+}
+
+scalar ISODateTime
+
+type Mutation {
+  updateAccount(name: String!): UpdateAccountResponse!
+  prepareBillingUpdate: PrepareBillingResponse
+  updateAccountBilling(input: UpdateAccountBillingInput!): UpdateAccountBillingResponse!
+  createApiKey: CreateApiKeyResponse!
+  deleteApiKey(apiKeyId: ID!): DeleteApiKeyResponse!
+  createActivity(input: CreateActivityInput!): CreateActivityResponse!
+  estimateActivity(input: CreateActivityInput!): EstimateActivityResponse!
+  createArtifact(input: CreateArtifactInput!): CreateArtifactResponse!
+  estimateArtifact(input: CreateArtifactInput!): EstimateArtifactResponse!
+  createConsumable(input: CreateConsumableInput!): CreateConsumableResponse!
+  estimateConsumable(input: CreateConsumableInput!): EstimateConsumableResponse!
+  createSkill(input: CreateSkillInput!): CreateSkillResponse!
+  estimateSkill(input: CreateSkillInput!): EstimateSkillResponse!
+  publishContract(id: ID!): PublishContractResponse!
+  disableContract(id: ID!): DisableContractResponse!
+  enableContract(id: ID!): EnableContractResponse!
+  createPlayer(input: CreatePlayerInput!): CreatePlayerResponse!
+  estimateCreatePlayer(input: CreatePlayerInput!): EstimateCreatePlayerResponse!
+}
+
+"""
+Describes the current state of pagination
+"""
+type PageInfo {
+  """
+  The cursor used to retrieve this page, if any
+  """
+  startCursor: String
+
+  """
+  The cursor to use to get the next page, if any
+  """
+  endCursor: String
+
+  """
+  Whether or not there are any more pages after this one
+  """
+  hasNextPage: Boolean!
+
+  """
+  Whether or not there are any more pages before this one
+  """
+  hasPreviousPage: Boolean!
+}
+
+type Player {
+  id: ID!
+  createdAt: ISODateTime!
+  updatedAt: ISODateTime!
+  name: String!
+  address: ContractAddress!
+}
+
+"""
+Contains a list of items of a particular type
+"""
+type PlayerConnection {
+  """
+  The page information
+  """
+  pageInfo: PageInfo!
+
+  """
+  The list of edges
+  """
+  edges: [PlayerEdge!]!
+
+  """
+  The total number of items
+  """
+  total: Int!
+}
+
+"""
+A single edge of a connection, containing the item and its cursor
+"""
+type PlayerEdge {
+  """
+  The item in the list
+  """
+  node: Player!
+
+  """
+  The cursor at this item, for use in pagination
+  """
+  cursor: String!
+}
+
+type PrepareBillingResponse {
+  clientSecret: StripeClientSecret!
+}
+
+type PublishContractResponse {
+  contract: Contract!
+}
+
+type Query {
+  account: Account!
+  contracts(contractType: ContractType, onlyEnabled: Boolean, showOthers: Boolean): ContractConnection!
+  contract(id: ID!): Contract
+  submission(id: ID!): Submission
+  player(id: ID!): Player
+  transaction(id: ID!): Transaction
+}
+
+interface SkillConstrained {
+  requiredSkills: [SkillLevel!]!
+}
+
+type SkillContract implements BaseModel & BaseAccountModel & Contract & BaseContract & DisableableContract & SkillConstrained & ConsumableConsumer {
+  id: ID!
+  createdAt: ISODateTime!
+  updatedAt: ISODateTime!
+  contractType: ContractType!
+  version: Int!
+  address: ContractAddress!
+  discoverable: Boolean!
+  name: String!
+  description: String!
+  uri: String!
+  account: String!
+  requiredSkills: [SkillLevel!]!
+  requiredConsumables: [ConsumableAmount!]!
+  disabled: Boolean!
+}
+
+type SkillLevel {
+  skill: SkillContract!
+  level: Int!
+}
+
+input SkillLevelInput {
+  skill: SkillReferenceInput!
+  level: Int!
+}
+
+input SkillReferenceInput {
+  id: ID!
+}
+
+scalar StripeClientSecret
+
+scalar StripePaymentMethod
+
+type Submission implements BaseModel & BaseAccountModel {
+  id: ID!
+  createdAt: ISODateTime!
+  updatedAt: ISODateTime!
+  submissionType: String!
+  currentStatus: SubmissionStatus!
+  errorDetails: String
+  estimateInSeconds: Int
+  inProgress: Boolean!
+  done: Boolean!
+  contract: Contract
+  player: Player
+}
+
+"""
+Contains a list of items of a particular type
+"""
+type SubmissionConnection {
+  """
+  The page information
+  """
+  pageInfo: PageInfo!
+
+  """
+  The list of edges
+  """
+  edges: [SubmissionEdge!]!
+
+  """
+  The total number of items
+  """
+  total: Int!
+}
+
+"""
+A single edge of a connection, containing the item and its cursor
+"""
+type SubmissionEdge {
+  """
+  The item in the list
+  """
+  node: Submission!
+
+  """
+  The cursor at this item, for use in pagination
+  """
+  cursor: String!
+}
+
+enum SubmissionStatus {
+  """
+  Submission has been created
+  """
+  Created
+
+  """
+  Submission has been submitted
+  """
+  Submitted
+
+  """
+  Submission is being worked on
+  """
+  Processing
+
+  """
+  Submission has been completed
+  """
+  Completed
+
+  """
+  Submission failed. See errorDetails for details.
+  """
+  Failed
+}
+
+type Transaction implements BaseModel & BaseAccountModel {
+  id: ID!
+  createdAt: ISODateTime!
+  updatedAt: ISODateTime!
+  transactionType: TransactionType!
+  amount: Float!
+  accountBalance: Float!
+  gasAmount: Float
+  submission: Submission
+  contract: Contract
+}
+
+"""
+Contains a list of items of a particular type
+"""
+type TransactionConnection {
+  """
+  The page information
+  """
+  pageInfo: PageInfo!
+
+  """
+  The list of edges
+  """
+  edges: [TransactionEdge!]!
+
+  """
+  The total number of items
+  """
+  total: Int!
+}
+
+"""
+A single edge of a connection, containing the item and its cursor
+"""
+type TransactionEdge {
+  """
+  The item in the list
+  """
+  node: Transaction!
+
+  """
+  The cursor at this item, for use in pagination
+  """
+  cursor: String!
+}
+
+enum TransactionType {
+  """
+  Prepayment balance increase
+  """
+  Prepayment
+
+  """
+  Create a new contract
+  """
+  CreateContract
+
+  """
+  Update a contract
+  """
+  UpdateContract
+}
+
+input UpdateAccountBillingInput {
+  stripePaymentMethod: StripePaymentMethod!
+}
+
+type UpdateAccountBillingResponse {
+  account: Account!
+}
+
+type UpdateAccountResponse {
+  account: Account!
+}

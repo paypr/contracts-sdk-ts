@@ -21,6 +21,10 @@
     "test": "jest",
     "posttest": "npm run lint",
     "lint": "tslint -c tslint.json --project tsconfig.json && tslint -c tslint.json --project spec/tsconfig.json",
+    "save-schema": "get-graphql-schema -h x-api-key=${PAYPR_API_KEY} ${PAYPR_API_GRAPHQL_URL:-https://api.paypr.money/designer/api/graphql} > ./schema.graphql",
+    "graphql-codegen": "graphql-codegen --config codegen.yml",
+    "graphql-codegen:watch": "npm run graphql-codegen -- --watch",
+    "save-schema-and-codegen": "npm run save-schema && npm run graphql-codegen",
     "pretty": "pretty-quick",
     "release": "standard-version"
   },
@@ -30,11 +34,21 @@
       "pre-push": "npm run lint"
     }
   },
-  "dependencies": {},
+  "dependencies": {
+    "graphql": "15.1.0",
+    "graphql-request": "2.1.0-next.1",
+    "graphql-tag": "2.10.3"
+  },
   "devDependencies": {
+    "@graphql-codegen/cli": "1.15.4",
+    "@graphql-codegen/named-operations-object": "1.15.4",
+    "@graphql-codegen/typescript": "1.15.4",
+    "@graphql-codegen/typescript-graphql-request": "1.15.4",
+    "@graphql-codegen/typescript-operations": "1.15.4",
     "@types/jest": "26.0.0",
     "@types/node": "14.0.13",
     "cz-conventional-changelog": "3.2.0",
+    "get-graphql-schema": "2.1.2",
     "husky": "4.2.5",
     "jest": "26.0.1",
     "prettier": "2.0.5",

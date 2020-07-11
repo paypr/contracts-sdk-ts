@@ -10,5 +10,8 @@
     "ter-arrow-parens": [true, "always"],
     "semicolon": false
   },
+  "linterOptions": {
+    "exclude": ["src/generated/**/*"]
+  },
   "rulesDirectory": []
 }

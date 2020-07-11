@@ -1,0 +1,19 @@
+overwrite: true
+schema: schema.graphql
+documents: src/graphql/**/*.{js,ts}
+generates:
+  src/generated/graphql.ts:
+    plugins:
+      - typescript
+      - typescript-operations
+      - named-operations-object
+      - typescript-graphql-request
+    config:
+      avoidOptionals: true
+      exportFragmentSpreadSubTypes: true
+      immutableTypes: true
+      nonOptionalTypename: true
+      omitOperationSuffix: true
+      noSchemaStitching: true
+      typesPrefix: Api
+      skipTypename: true
