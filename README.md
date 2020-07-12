@@ -26,7 +26,7 @@ import { getContractsSdk } from '@paypr/contracts-sdk-ts/dist';
 
 const contractsSdk = getContractsSdk();
 
-// access the SDK functionality
+// access the SDK functionality with contractsSdk
 ```
 
 Alternatively, pass your API key via the options:
@@ -36,7 +36,7 @@ import { getContractsSdk } from '@paypr/contracts-sdk-ts/dist';
 
 const contractsSdk = getContractsSdk({ apiKey: 'your-api-key-goes-here' });
 
-// access the SDK functionality
+// access the SDK functionality with contractsSdk
 ```
 
 ### Executing functions
@@ -48,7 +48,9 @@ For example, to create a player, use the following:
 ```javascript
 const submissionId = await createPlayer({ name: 'Tom Smith' });
 
-const player = await waitForSubmissionDone(submissionId);
+const submission = await waitForSubmissionDone(submissionId);
+
+const player = submission.player;
 
 console.log('Player:', player.name);
 ```
