@@ -59,8 +59,8 @@ const defaultGraphqlUrl = process.env.PAYPR_API_GRAPHQL_URL || 'https://api.payp
  *
  * @returns the Contracts SDK
  */
-export const createContractsSdk = (options: ContractsSdkOptions = {}): ContractsSdk => {
-  const contractsApiClient = createContractsApiClient(options);
+export const getContractsSdk = (options: ContractsSdkOptions = {}): ContractsSdk => {
+  const contractsApiClient = getContractsApiClient(options);
 
   const contractsApiSdk = getSdk(contractsApiClient);
 
@@ -73,5 +73,5 @@ export const createContractsSdk = (options: ContractsSdkOptions = {}): Contracts
   };
 };
 
-const createContractsApiClient = ({ apiKey, graphqlUrl }: ContractsSdkOptions = {}) =>
+const getContractsApiClient = ({ apiKey, graphqlUrl }: ContractsSdkOptions = {}) =>
   new GraphQLClient(graphqlUrl || defaultGraphqlUrl, { headers: { 'x-api-key': apiKey || defaultApiKey } });
