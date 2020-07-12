@@ -1,8 +1,7 @@
 {
   "author": "The Paypr Company",
   "name": "@paypr/contracts-sdk-ts",
-  "description": "",
-  "private": true,
+  "description": "Contracts SDK for JavaScript and Typescript",
   "license": "UNLICENSED",
   "version": "0.0.0",
   "homepage": "https://paypr.money/",
@@ -26,7 +25,8 @@
     "graphql-codegen:watch": "npm run graphql-codegen -- --watch",
     "save-schema-and-codegen": "npm run save-schema && npm run graphql-codegen",
     "pretty": "pretty-quick",
-    "release": "standard-version"
+    "release": "standard-version",
+    "prepare": "npm run rebuild && npm run release"
   },
   "husky": {
     "hooks": {
