@@ -2,7 +2,7 @@ import gql from 'graphql-tag';
 import { ApiPlayerDetails, Sdk } from '../generated/graphql';
 import { ArgumentError } from '../utils/errors';
 
-/** Details for the PLayer */
+/** Details for the Player */
 export type PlayerDetails = ApiPlayerDetails;
 
 export const playerDetailsFragment = gql`
