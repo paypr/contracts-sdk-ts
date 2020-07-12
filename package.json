@@ -12,6 +12,10 @@
   "bugs": {
     "url": "https://github.com/paypr/contracts-sdk-ts/issues"
   },
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "scripts": {
     "clean": "rm -rf dist && rm -rf out",
     "build": "tsc",
