@@ -45,14 +45,97 @@ All of the functionality is available as async functions on the API.
 
 For example, to create a player, use the following:
 
-```javascript
-const submissionId = await createPlayer({ name: 'Tom Smith' });
+```typescript
+const submissionId: string = await contractsSdk.createPlayer({ name: 'Tom Jones' });
 
-const submission = await waitForSubmissionDone(submissionId);
+const submission: SubmissionDetails = await contractsSdk.waitForSubmissionDone(submissionId);
 
-const player = submission.player;
+const player: PlayerDetails = submission.player;
 
 console.log('Player:', player.name);
+```
+
+## Functionality
+
+### Actions
+
+#### Purchase
+
+Creates a new player with the given name.
+
+```typescript
+const submissionId: string = await contractsSdk.createPlayer({ name: 'Tom Jones' });
+```
+
+#### Create a player
+
+Creates a new player with the given name.
+
+```typescript
+const submissionId: string = await contractsSdk.createPlayer({ name: 'Tom Jones' });
+```
+
+#### Transfer consumable to/from a player
+
+Transfers a specific amount of consumable to or from a player.
+
+```typescript
+const submissionId: string = await contractsSdk.transferConsumableToPlayer(playerId, consumableContractId, amount);
+
+const submissionId: string = await contractsSdk.transferConsumableFromPlayer(playerId, consumableContractId, amount);
+```
+
+### Information
+
+#### Load account details
+
+Loads the account details.
+
+```typescript
+const account: AccountDetails = await contractsSdk.loadAccount();
+```
+
+#### Load contract details
+
+Loads contract details by ID.
+
+```typescript
+const contract: ContractDetails = await contractsSdk.loadContract(contractId);
+```
+
+#### Load a player
+
+Loads player details by ID.
+
+```typescript
+const player: PlayerDetails = await contractsSdk.loadPlayer(submissionId);
+```
+
+#### Get player consumable balance
+
+Gets the consumable balance for a given player.
+
+```typescript
+const playerConsumableBalance: number = await contractsSdk.getPlayerConsumableBalance(playerId, consumableContractId);
+```
+
+#### Load a submission
+
+Loads submission details by ID.
+
+```typescript
+const submission: SubmissionDetails = await contractsSdk.loadSubmission(submissionId);
+```
+
+### Utilities
+
+#### Wait for Submission Done
+
+Waits until the submission with the given ID is either completed or failed.
+
+```typescript
+const submissionId: string = // do something that returns a submission id
+const submission: SubmissionDetails = await contractsSdk.waitForSubmissionDone(submissionId);
 ```
 
 ## Contributing
