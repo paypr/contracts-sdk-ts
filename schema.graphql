@@ -15,7 +15,8 @@ type Account implements BaseModel {
   name: String!
   nickname: String!
   hasPaymentInfo: Boolean!
-  balance: Float
+  balance: Float!
+  payprBalance: Float!
   apiKeys: ApiKeyConnection!
   contracts(contractType: ContractType): ContractConnection!
   submissions(currentStatus: SubmissionStatus, onlyInProgress: Boolean): SubmissionConnection!
@@ -156,6 +157,10 @@ type ConsumableContract implements BaseModel & BaseAccountModel & Contract & Bas
   account: String!
   symbol: String!
   exchangeRate: Int!
+  totalSupply: Float!
+  accountBalance: Float!
+  playerBalance(playerId: ID!): Float!
+  playerBalances(playerIds: [ID!]!): [PlayerAmount!]!
   disabled: Boolean!
 }
 
@@ -254,7 +259,7 @@ input CreateActivityInput {
   discoverable: Boolean
 }
 
-type CreateActivityResponse {
+type CreateActivityResponse implements SubmissionResponse {
   submission: Submission!
 }
 
@@ -271,7 +276,7 @@ input CreateArtifactInput {
   discoverable: Boolean
 }
 
-type CreateArtifactResponse {
+type CreateArtifactResponse implements SubmissionResponse {
   submission: Submission!
 }
 
@@ -282,7 +287,7 @@ input CreateConsumableInput {
   discoverable: Boolean
 }
 
-type CreateConsumableResponse {
+type CreateConsumableResponse implements SubmissionResponse {
   submission: Submission!
 }
 
@@ -290,7 +295,7 @@ input CreatePlayerInput {
   name: String!
 }
 
-type CreatePlayerResponse {
+type CreatePlayerResponse implements SubmissionResponse {
   submission: Submission!
 }
 
@@ -301,7 +306,7 @@ input CreateSkillInput {
   discoverable: Boolean
 }
 
-type CreateSkillResponse {
+type CreateSkillResponse implements SubmissionResponse {
   submission: Submission!
 }
 
@@ -325,11 +330,11 @@ interface DisableableContract {
   disabled: Boolean!
 }
 
-type DisableContractResponse {
+type DisableContractResponse implements SubmissionResponse {
   submission: Submission!
 }
 
-type EnableContractResponse {
+type EnableContractResponse implements SubmissionResponse {
   submission: Submission!
 }
 
@@ -361,11 +366,46 @@ type EstimateCreatePlayerResponse implements GasEstimateResponse {
   prepayCharge: Float
 }
 
+type EstimatePurchasePayprResponse implements GasEstimateResponse {
+  gasAmount: Int!
+  gasCost: Float!
+  balance: Float!
+  prepayCharge: Float
+  payprCost: Float!
+  totalCost: Float!
+}
+
 type EstimateSkillResponse implements GasEstimateResponse {
   gasAmount: Int!
   gasCost: Float!
   balance: Float!
   prepayCharge: Float
+}
+
+type EstimateTransferConsumableFromPlayerResponse implements GasEstimateResponse {
+  gasAmount: Int!
+  gasCost: Float!
+  balance: Float!
+  prepayCharge: Float
+  playerConsumableBalance: Float!
+}
+
+type EstimateTransferConsumableToPlayerResponse implements GasEstimateResponse & GasAndPayprEstimateResponse {
+  gasAmount: Int!
+  gasCost: Float!
+  balance: Float!
+  prepayCharge: Float
+  payprAmount: Float!
+  payprBalance: Float!
+}
+
+interface GasAndPayprEstimateResponse {
+  gasAmount: Int!
+  gasCost: Float!
+  balance: Float!
+  prepayCharge: Float
+  payprAmount: Float!
+  payprBalance: Float!
 }
 
 interface GasEstimateResponse {
@@ -394,8 +434,30 @@ type Mutation {
   publishContract(id: ID!): PublishContractResponse!
   disableContract(id: ID!): DisableContractResponse!
   enableContract(id: ID!): EnableContractResponse!
+  estimatePurchasePaypr(amount: Float!): EstimatePurchasePayprResponse!
+  purchasePaypr(amount: Float!): PurchasePayprResponse!
   createPlayer(input: CreatePlayerInput!): CreatePlayerResponse!
   estimateCreatePlayer(input: CreatePlayerInput!): EstimateCreatePlayerResponse!
+  transferConsumableFromPlayer(
+    playerId: ID!
+    consumableContractId: ID!
+    amount: Float!
+  ): TransferConsumableFromPlayerResponse!
+  estimateTransferConsumableFromPlayer(
+    playerId: ID!
+    consumableContractId: ID!
+    amount: Float!
+  ): EstimateTransferConsumableFromPlayerResponse!
+  transferConsumableToPlayer(
+    playerId: ID!
+    consumableContractId: ID!
+    amount: Float!
+  ): TransferConsumableToPlayerResponse!
+  estimateTransferConsumableToPlayer(
+    playerId: ID!
+    consumableContractId: ID!
+    amount: Float!
+  ): EstimateTransferConsumableToPlayerResponse!
 }
 
 """
@@ -429,6 +491,13 @@ type Player {
   updatedAt: ISODateTime!
   name: String!
   address: ContractAddress!
+  consumableBalance(consumableContractId: ID!): Float!
+  consumableBalances(consumableContractIds: [ID!]!): [ConsumableAmount!]!
+}
+
+type PlayerAmount {
+  player: Player!
+  amount: Float!
 }
 
 """
@@ -472,6 +541,10 @@ type PrepareBillingResponse {
 
 type PublishContractResponse {
   contract: Contract!
+}
+
+type PurchasePayprResponse implements SubmissionResponse {
+  submission: Submission!
 }
 
 type Query {
@@ -534,6 +607,7 @@ type Submission implements BaseModel & BaseAccountModel {
   done: Boolean!
   contract: Contract
   player: Player
+  transactionHash: String
 }
 
 """
@@ -569,6 +643,10 @@ type SubmissionEdge {
   The cursor at this item, for use in pagination
   """
   cursor: String!
+}
+
+interface SubmissionResponse {
+  submission: Submission!
 }
 
 enum SubmissionStatus {
@@ -652,14 +730,32 @@ enum TransactionType {
   Prepayment
 
   """
+  Represents a purchase
+  """
+  Purchase
+
+  """
   Create a new contract
   """
   CreateContract
 
   """
+  Execute a contract
+  """
+  ExecuteContract
+
+  """
   Update a contract
   """
   UpdateContract
+}
+
+type TransferConsumableFromPlayerResponse implements SubmissionResponse {
+  submission: Submission!
+}
+
+type TransferConsumableToPlayerResponse implements SubmissionResponse {
+  submission: Submission!
 }
 
 input UpdateAccountBillingInput {

@@ -16,7 +16,7 @@ export const playerDetailsFragment = gql`
 `;
 
 export const loadPlayer = async (sdk: Sdk, playerId: string) => {
-  const { player } = await sdk.loadQuery({ playerId });
+  const { player } = await sdk.loadPlayer({ playerId });
   if (!player) {
     throw new ArgumentError(`Player not found: ${playerId}`);
   }
@@ -24,10 +24,27 @@ export const loadPlayer = async (sdk: Sdk, playerId: string) => {
 };
 
 gql`
-  query loadQuery($playerId: ID!) {
+  query loadPlayer($playerId: ID!) {
     player(id: $playerId) {
       ...PlayerDetails
     }
   }
   ${playerDetailsFragment}
+`;
+
+export const getPlayerConsumableBalance = async (sdk: Sdk, playerId: string, consumableContractId: string) => {
+  const { player } = await sdk.getPlayerConsumableBalance({ playerId, consumableContractId });
+  if (!player) {
+    throw new ArgumentError(`Player not found: ${playerId}`);
+  }
+  const { consumableBalance } = player;
+  return consumableBalance;
+};
+
+gql`
+  query getPlayerConsumableBalance($playerId: ID!, $consumableContractId: ID!) {
+    player(id: $playerId) {
+      consumableBalance(consumableContractId: $consumableContractId)
+    }
+  }
 `;
