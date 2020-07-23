@@ -12,5 +12,5 @@ export interface ContractSdk {
 }
 
 export const getContractsSdk = (sdk: Sdk): ContractSdk => ({
-  loadContract: (contractId: string) => loadContract(sdk, contractId),
+  loadContract: (contractId) => loadContract(sdk, contractId),
 });

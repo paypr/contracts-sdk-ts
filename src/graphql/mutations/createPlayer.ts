@@ -4,10 +4,10 @@ import { ApiCreatePlayerInput, Sdk } from '../../generated/graphql';
 export const createPlayer = async (sdk: Sdk, input: ApiCreatePlayerInput) => {
   const {
     createPlayer: {
-      submission: { id: jobId },
+      submission: { id: submissionId },
     },
   } = await sdk.createPlayer({ input });
-  return jobId;
+  return submissionId;
 };
 
 gql`

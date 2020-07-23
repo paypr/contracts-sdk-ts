@@ -4,10 +4,10 @@ import { Sdk } from '../../generated/graphql';
 export const purchasePaypr = async (sdk: Sdk, amount: number) => {
   const {
     purchasePaypr: {
-      submission: { id: jobId },
+      submission: { id: submissionId },
     },
   } = await sdk.purchasePaypr({ amount });
-  return jobId;
+  return submissionId;
 };
 
 gql`

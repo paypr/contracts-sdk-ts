@@ -1,29 +1,12 @@
 import gql from 'graphql-tag';
-import { ApiContractDetails, ApiContractReference, Sdk } from '../generated/graphql';
+import { ApiContractDetails, Sdk } from '../generated/graphql';
 import { ArgumentError } from '../utils/errors';
-
-/** Reference to a Contract */
-export type ContractReference = ApiContractReference;
+import { consumableAmountReferenceFragment } from './consumableAmount';
+import { contractReferenceFragment } from './contractReference';
+import { skillLevelReferenceFragment } from './skillLevel';
 
 /** Details for the Contract */
 export type ContractDetails = ApiContractDetails;
-
-export const contractReferenceFragment = gql`
-  fragment ContractReference on Contract {
-    id
-    contractType
-    address
-
-    ... on BaseContract {
-      account
-      name
-    }
-
-    ... on DisableableContract {
-      disabled
-    }
-  }
-`;
 
 export const contractDetailsFragment = gql`
   fragment ContractDetails on Contract {
@@ -69,28 +52,8 @@ export const contractDetailsFragment = gql`
     ${contractReferenceFragment}
   }
 
-  fragment SkillLevelReference on SkillLevel {
-    skill {
-      id
-      name
-      account
-      disabled
-    }
-
-    level
-  }
-
-  fragment ConsumableAmountReference on ConsumableAmount {
-    consumable {
-      id
-      name
-      account
-      disabled
-      exchangeRate
-    }
-
-    amount
-  }
+  ${consumableAmountReferenceFragment}
+  ${skillLevelReferenceFragment}
 `;
 
 export const loadContract = async (sdk: Sdk, contractId: string) => {

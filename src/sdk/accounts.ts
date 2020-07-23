@@ -31,6 +31,6 @@ export interface AccountsSdk {
 
 export const getAccountsSdk = (sdk: Sdk): AccountsSdk => ({
   loadAccount: () => loadAccount(sdk),
-  estimatePurchasePaypr: (amount: number) => estimatePurchasePaypr(sdk, amount),
-  purchasePaypr: (amount: number) => purchasePaypr(sdk, amount),
+  estimatePurchasePaypr: (amount) => estimatePurchasePaypr(sdk, amount),
+  purchasePaypr: (amount) => purchasePaypr(sdk, amount),
 });

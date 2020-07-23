@@ -2,7 +2,7 @@ import gql from 'graphql-tag';
 import { ApiSubmissionDetails, Sdk } from '../generated/graphql';
 import { sleep } from '../utils/async';
 import { ArgumentError, TimeoutError } from '../utils/errors';
-import { contractReferenceFragment } from './contracts';
+import { contractReferenceFragment } from './contractReference';
 import { playerReferenceFragment } from './players';
 
 /** Details of the Submission */

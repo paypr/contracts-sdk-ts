@@ -9,10 +9,10 @@ export const transferConsumableToPlayer = async (
 ) => {
   const {
     transferConsumableToPlayer: {
-      submission: { id: jobId },
+      submission: { id: submissionId },
     },
   } = await sdk.transferConsumableToPlayer({ playerId, consumableContractId, amount });
-  return jobId;
+  return submissionId;
 };
 
 gql`

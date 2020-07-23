@@ -20,6 +20,6 @@ export interface SubmissionsSDK {
 }
 
 export const getSubmissionsSdk = (sdk: Sdk): SubmissionsSDK => ({
-  loadSubmission: (submissionId: string) => loadSubmission(sdk, submissionId),
-  waitForSubmissionDone: (submissionId: string) => waitForSubmissionDone(sdk, submissionId),
+  loadSubmission: (submissionId) => loadSubmission(sdk, submissionId),
+  waitForSubmissionDone: (submissionId) => waitForSubmissionDone(sdk, submissionId),
 });

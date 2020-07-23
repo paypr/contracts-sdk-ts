@@ -1,4 +1,8 @@
-import { ApiCreatePlayerInput, Sdk } from '../generated/graphql';
+import { ApiConsumableAmountInput, ApiCreatePlayerInput, Sdk } from '../generated/graphql';
+import {
+  AcquireNextSkillLevelForPlayerEstimateDetails,
+  estimateAcquireNextSkillLevelForPlayer,
+} from '../graphql/estimates/acquireNextSkillLevelForPlayer';
 import { estimateCreatePlayer } from '../graphql/estimates/createPlayer';
 import {
   estimateTransferConsumableFromPlayer,
@@ -6,6 +10,10 @@ import {
 } from '../graphql/estimates/transferConsumableFromPlayer';
 import { estimateTransferConsumableToPlayer } from '../graphql/estimates/transferConsumableToPlayer';
 import { GasAndPayprEstimateDetails, GasEstimateDetails } from '../graphql/gasEstimate';
+import {
+  acquireNextSkillLevelForPlayer,
+  AcquireNextSkillLevelForPlayerOptions,
+} from '../graphql/mutations/acquireNextSkillLevelForPlayer';
 import { createPlayer } from '../graphql/mutations/createPlayer';
 import { transferConsumableFromPlayer } from '../graphql/mutations/transferConsumableFromPlayer';
 import { transferConsumableToPlayer } from '../graphql/mutations/transferConsumableToPlayer';
@@ -107,26 +115,64 @@ export interface PlayersSdk {
    * @returns a promise to a submission id
    */
   transferConsumableFromPlayer: (playerId: string, consumableContractId: string, amount: number) => Promise<string>;
+
+  /**
+   * Estimate to acquire the next skill level for the player.
+   *
+   * @param playerId the player ID
+   * @param skillContractId the skill contract ID
+   * @param options execution options
+   *
+   * @returns a promise to a submission id
+   */
+  estimateAcquireNextSkillLevelForPlayer: (
+    playerId: string,
+    skillContractId: string,
+    options?: AcquireNextSkillLevelForPlayerOptions,
+  ) => Promise<AcquireNextSkillLevelForPlayerEstimateDetails>;
+
+  /**
+   * Transfer's the given amount of consumable from the player.
+   *
+   * @param playerId the player ID
+   * @param skillContractId the skill contract ID
+   * @param amountsToProvide the amounts of consumable to provide
+   * @param options execution options
+   *
+   * @returns a promise to a submission id
+   */
+  acquireNextSkillLevelForPlayer: (
+    playerId: string,
+    skillContractId: string,
+    amountsToProvide: ApiConsumableAmountInput[],
+    options?: AcquireNextSkillLevelForPlayerOptions,
+  ) => Promise<string>;
 }
 
 export const getPlayersSdk = (sdk: Sdk): PlayersSdk => ({
   estimateCreatePlayer: (input: ApiCreatePlayerInput) => estimateCreatePlayer(sdk, input),
   createPlayer: (input: ApiCreatePlayerInput) => createPlayer(sdk, input),
 
-  loadPlayer: (playerId: string) => loadPlayer(sdk, playerId),
+  loadPlayer: (playerId) => loadPlayer(sdk, playerId),
 
-  getSkillLevel: (playerId: string, skillContractId: string) => getPlayerSkillLevel(sdk, playerId, skillContractId),
+  getSkillLevel: (playerId, skillContractId) => getPlayerSkillLevel(sdk, playerId, skillContractId),
 
-  getConsumableBalance: (playerId: string, consumableContractId: string) =>
+  getConsumableBalance: (playerId, consumableContractId) =>
     getPlayerConsumableBalance(sdk, playerId, consumableContractId),
 
-  estimateTransferConsumableToPlayer: (playerId: string, consumableContractId: string, amount: number) =>
+  estimateTransferConsumableToPlayer: (playerId, consumableContractId, amount) =>
     estimateTransferConsumableToPlayer(sdk, playerId, consumableContractId, amount),
-  transferConsumableToPlayer: (playerId: string, consumableContractId: string, amount: number) =>
+  transferConsumableToPlayer: (playerId, consumableContractId, amount) =>
     transferConsumableToPlayer(sdk, playerId, consumableContractId, amount),
 
-  estimateTransferConsumableFromPlayer: (playerId: string, consumableContractId: string, amount: number) =>
+  estimateTransferConsumableFromPlayer: (playerId, consumableContractId, amount) =>
     estimateTransferConsumableFromPlayer(sdk, playerId, consumableContractId, amount),
-  transferConsumableFromPlayer: (playerId: string, consumableContractId: string, amount: number) =>
+  transferConsumableFromPlayer: (playerId, consumableContractId, amount) =>
     transferConsumableFromPlayer(sdk, playerId, consumableContractId, amount),
+
+  estimateAcquireNextSkillLevelForPlayer: (playerId, skillContractId, options?) =>
+    estimateAcquireNextSkillLevelForPlayer(sdk, playerId, skillContractId, options),
+
+  acquireNextSkillLevelForPlayer: (playerId, skillContractId, amountsToProvide, options?) =>
+    acquireNextSkillLevelForPlayer(sdk, playerId, skillContractId, amountsToProvide, options),
 });

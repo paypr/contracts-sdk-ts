@@ -5,6 +5,7 @@
 - [Access](#access)
 - [Information](#information)
   - [Load player details](#load-player-details)
+  - [Get skill level](#get-skill-level)
   - [Get consumable balance](#get-consumable-balance)
 - [Actions](#actions)
   - [Estimate create a player](#estimate-create-a-player)
@@ -76,7 +77,7 @@ console.log(estimate.gasCost);
 Creates a new player with the given name.
 
 ```typescript
-const submissionId: string = await sdk.players.createPlayer({ name: 'Tom Jones' });
+const submissionId = await sdk.players.createPlayer({ name: 'Tom Jones' });
 
 const submission: SubmissionDetails = await sdk.submissions.waitForSubmissionDone(submissionId);
 
@@ -102,7 +103,7 @@ console.log('Paypr amount:', estimate.payprAmount);
 Transfers a specific amount of consumable from your account to a player.
 
 ```typescript
-const submissionId: string = await sdk.players.transferConsumableToPlayer(playerId, consumableContractId, amount);
+const submissionId = await sdk.players.transferConsumableToPlayer(playerId, consumableContractId, amount);
 
 await sdk.submissions.waitForSubmissionDone(submissionId);
 
@@ -126,10 +127,37 @@ console.log('Player consumable balance:', estimate.playerConsumableBalance);
 Transfers a specific amount of consumable from a player to your account.
 
 ```typescript
-const submissionId: string = await sdk.players.transferConsumableFromPlayer(playerId, consumableContractId, amount);
+const submissionId = await sdk.players.transferConsumableFromPlayer(playerId, consumableContractId, amount);
 
 await sdk.submissions.waitForSubmissionDone(submissionId);
 
 console.log('Transfer from player is complete!');
 console.log('New balance:', await sdk.players.getConsumableBalance(playerId, consumableContractId));
+```
+
+### Estimate acquire the next skill level for a player
+
+Estimates the cost and consumables to acquire the next skill level for a player.
+
+```typescript
+const estimate = await sdk.players.estimateAcquireNextSkillLevelForPlayer(playerId, skillContractId);
+
+console.log('Consumables needed:', estimate.consumableAmountsNeeded);
+```
+
+### Acquire the next skill level for a player
+
+Acquires the next skill level for a player.
+
+```typescript
+const submissionId = await sdk.players.acquireNextSkillLevelForPlayer(
+  playerId,
+  skillContractId,
+  consumableAmountsToProvide,
+);
+
+await sdk.submissions.waitForSubmissionDone(submissionId);
+
+console.log('Skill acquired!');
+console.log('New skill level:', await sdk.players.getSkillLevel(playerId, skillContractId));
 ```
