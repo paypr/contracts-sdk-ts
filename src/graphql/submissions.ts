@@ -2,7 +2,8 @@ import gql from 'graphql-tag';
 import { ApiSubmissionDetails, Sdk } from '../generated/graphql';
 import { sleep } from '../utils/async';
 import { ArgumentError, TimeoutError } from '../utils/errors';
-import { playerDetailsFragment } from './players';
+import { contractReferenceFragment } from './contractReference';
+import { playerReferenceFragment } from './players';
 
 /** Details of the Submission */
 export type SubmissionDetails = ApiSubmissionDetails;
@@ -13,13 +14,17 @@ export const submissionDetailsFragment = gql`
     submissionType
     errorDetails
     done
+    contract {
+      ...ContractReference
+    }
     player {
-      ...PlayerDetails
+      ...PlayerReference
     }
     createdAt
     updatedAt
   }
-  ${playerDetailsFragment}
+  ${contractReferenceFragment}
+  ${playerReferenceFragment}
 `;
 
 const maxFetchTimes = 300; // about 5 minutes
