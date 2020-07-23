@@ -1,10 +1,25 @@
 import { ApiCreatePlayerInput, Sdk } from '../generated/graphql';
+import { estimateCreatePlayer } from '../graphql/estimates/createPlayer';
+import {
+  estimateTransferConsumableFromPlayer,
+  TransferConsumableFromPlayerEstimateDetails,
+} from '../graphql/estimates/transferConsumableFromPlayer';
+import { estimateTransferConsumableToPlayer } from '../graphql/estimates/transferConsumableToPlayer';
+import { GasAndPayprEstimateDetails, GasEstimateDetails } from '../graphql/gasEstimate';
 import { createPlayer } from '../graphql/mutations/createPlayer';
 import { transferConsumableFromPlayer } from '../graphql/mutations/transferConsumableFromPlayer';
 import { transferConsumableToPlayer } from '../graphql/mutations/transferConsumableToPlayer';
 import { getPlayerConsumableBalance, getPlayerSkillLevel, loadPlayer, PlayerDetails } from '../graphql/players';
 
 export interface PlayersSdk {
+  /**
+   * Estimate creating a player with the given details
+   * @param input the player details
+   *
+   * @returns a promise to the estimate
+   */
+  estimateCreatePlayer: (input: ApiCreatePlayerInput) => Promise<GasEstimateDetails>;
+
   /**
    * Create a player with the given details
    * @param input the player details
@@ -42,6 +57,21 @@ export interface PlayersSdk {
   getConsumableBalance: (playerId: string, consumableContractId: string) => Promise<number>;
 
   /**
+   * Estimate how much it would cost to transfer the given amount of consumable to the player
+   *
+   * @param playerId the player ID
+   * @param consumableContractId the consumable contract ID
+   * @param amount the amount of consumable to transfer
+   *
+   * @returns a promise to the estimate details
+   */
+  estimateTransferConsumableToPlayer: (
+    playerId: string,
+    consumableContractId: string,
+    amount: number,
+  ) => Promise<GasAndPayprEstimateDetails>;
+
+  /**
    * Transfer's the given amount of consumable to the player
    *
    * @param playerId the player ID
@@ -51,6 +81,21 @@ export interface PlayersSdk {
    * @returns a promise to a submission id
    */
   transferConsumableToPlayer: (playerId: string, consumableContractId: string, amount: number) => Promise<string>;
+
+  /**
+   * Estimate to transfer the given amount of consumable from the player.
+   *
+   * @param playerId the player ID
+   * @param consumableContractId the consumable contract ID
+   * @param amount the amount of consumable to transfer
+   *
+   * @returns a promise to a submission id
+   */
+  estimateTransferConsumableFromPlayer: (
+    playerId: string,
+    consumableContractId: string,
+    amount: number,
+  ) => Promise<TransferConsumableFromPlayerEstimateDetails>;
 
   /**
    * Transfer's the given amount of consumable from the player.
@@ -65,7 +110,9 @@ export interface PlayersSdk {
 }
 
 export const getPlayersSdk = (sdk: Sdk): PlayersSdk => ({
+  estimateCreatePlayer: (input: ApiCreatePlayerInput) => estimateCreatePlayer(sdk, input),
   createPlayer: (input: ApiCreatePlayerInput) => createPlayer(sdk, input),
+
   loadPlayer: (playerId: string) => loadPlayer(sdk, playerId),
 
   getSkillLevel: (playerId: string, skillContractId: string) => getPlayerSkillLevel(sdk, playerId, skillContractId),
@@ -73,8 +120,13 @@ export const getPlayersSdk = (sdk: Sdk): PlayersSdk => ({
   getConsumableBalance: (playerId: string, consumableContractId: string) =>
     getPlayerConsumableBalance(sdk, playerId, consumableContractId),
 
+  estimateTransferConsumableToPlayer: (playerId: string, consumableContractId: string, amount: number) =>
+    estimateTransferConsumableToPlayer(sdk, playerId, consumableContractId, amount),
   transferConsumableToPlayer: (playerId: string, consumableContractId: string, amount: number) =>
     transferConsumableToPlayer(sdk, playerId, consumableContractId, amount),
+
+  estimateTransferConsumableFromPlayer: (playerId: string, consumableContractId: string, amount: number) =>
+    estimateTransferConsumableFromPlayer(sdk, playerId, consumableContractId, amount),
   transferConsumableFromPlayer: (playerId: string, consumableContractId: string, amount: number) =>
     transferConsumableFromPlayer(sdk, playerId, consumableContractId, amount),
 });

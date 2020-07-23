@@ -7,8 +7,11 @@
   - [Load player details](#load-player-details)
   - [Get consumable balance](#get-consumable-balance)
 - [Actions](#actions)
+  - [Estimate create a player](#estimate-create-a-player)
   - [Create a player](#create-a-player)
+  - [Estimate transfer consumable to a player](#estimate-transfer-consumable-to-a-player)
   - [Transfer consumable to a player](#transfer-consumable-to-a-player)
+  - [Estimate transfer consumable from a player](#estimate-transfer-consumable-from-a-player)
   - [Transfer consumable from a player](#transfer-consumable-from-a-player)
 
 ## Access
@@ -58,6 +61,16 @@ console.log('Current balance:', playerConsumableBalance);
 
 ## Actions
 
+### Estimate create a player
+
+Estimates creating a new player with the given name.
+
+```typescript
+const estimate = await sdk.players.estimateCreatePlayer({ name: 'Tom Jones' });
+
+console.log(estimate.gasCost);
+```
+
 ### Create a player
 
 Creates a new player with the given name.
@@ -72,6 +85,18 @@ const player: PlayerReference = submission.player;
 console.log(player.name);
 ```
 
+### Estimate transfer consumable to a player
+
+Estimates the cost in dollars and Paypr to transfer a given amount of consumable
+to a player.
+
+```typescript
+const estimate = await sdk.players.estimateTransferConsumableToPlayer(playerId, consumableContractId, amount);
+
+console.log('Gas cost:', estimate.gasCost);
+console.log('Paypr amount:', estimate.payprAmount);
+```
+
 ### Transfer consumable to a player
 
 Transfers a specific amount of consumable from your account to a player.
@@ -83,6 +108,17 @@ await sdk.submissions.waitForSubmissionDone(submissionId);
 
 console.log('Transfer to player is complete!');
 console.log('New balance:', await sdk.players.getConsumableBalance(playerId, consumableContractId));
+```
+
+### Estimate transfer consumable from a player
+
+Estimates the cost to transfer a given amount of consumable from a player.
+
+```typescript
+const estimate = await sdk.players.estimateTransferConsumableFromPlayer(playerId, consumableContractId, amount);
+
+console.log('Gas cost:', estimate.gasCost);
+console.log('Player consumable balance:', estimate.playerConsumableBalance);
 ```
 
 ### Transfer consumable from a player

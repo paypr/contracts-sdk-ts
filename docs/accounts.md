@@ -6,6 +6,7 @@
 - [Information](#information)
   - [Load account details](#load-account-details)
 - [Actions](#actions)
+  - [Estimate Paypr purchase cost](#estimate-paypr-purchase-cost)
   - [Purchase Paypr](#purchase-paypr)
 
 ## Access
@@ -35,12 +36,22 @@ console.log(account.name);
 
 ## Actions
 
+### Estimate Paypr purchase cost
+
+Estimates the cost to purchase a given amount of Paypr.
+
+```typescript
+const estimate: PurchasePayprGasEstimateDetail = await sdk.accounts.estimatePurchasePaypr(amount);
+
+console.log('Paypr cost:', estimate.payprCost);
+```
+
 ### Purchase Paypr
 
 Purchases Paypr.
 
 ```typescript
-const submissionId: string = await sdk.accounts.purchasePaypr(amount: 100);
+const submissionId: string = await sdk.accounts.purchasePaypr(amount);
 
 await sdk.submissions.waitForSubmissionDone(submissionId);
 
