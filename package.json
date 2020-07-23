@@ -18,9 +18,9 @@
   ],
   "scripts": {
     "clean": "rm -rf dist && rm -rf src/generated && rm -rf out",
-    "build": "tsc",
+    "build": "npm run graphql-codegen && tsc",
     "build:watch": "tsc --watch",
-    "rebuild": "npm run clean && npm run graphql-codegen && npm run build",
+    "rebuild": "npm run clean && npm run build",
     "test": "jest",
     "posttest": "npm run lint",
     "lint": "tslint -c tslint.json --project tsconfig.json && tslint -c tslint.json --project spec/tsconfig.json",
@@ -39,7 +39,7 @@
     }
   },
   "dependencies": {
-    "graphql": "15.1.0",
+    "graphql": "15.3.0",
     "graphql-request": "2.1.0-next.1",
     "graphql-tag": "2.10.4"
   },
