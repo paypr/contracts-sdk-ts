@@ -18,7 +18,7 @@ import { getSdk } from '@paypr/contracts-sdk-ts/dist';
 
 const sdk = getSdk();
 
-// access the Submissions SDK functionality with sdk.submissions
+sdk.submissions. // access the Submissions SDK functionality
 ```
 
 ## Information
@@ -28,7 +28,7 @@ const sdk = getSdk();
 Loads the submission details.
 
 ```typescript
-const submission: SubmissionDetails = await sdk.submissions.loadSubmission();
+const submission: SubmissionDetails = await sdk.submissions.loadSubmission(submissionId);
 
 console.log(submission.name);
 ```

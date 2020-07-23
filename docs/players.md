@@ -25,7 +25,7 @@ import { getSdk } from '@paypr/contracts-sdk-ts/dist';
 
 const sdk = getSdk();
 
-// access the Players SDK functionality with sdk.players
+sdk.players. // access the Players SDK functionality
 ```
 
 ## Information
@@ -35,7 +35,7 @@ const sdk = getSdk();
 Loads the player details.
 
 ```typescript
-const player: PlayerDetails = await sdk.players.loadPlayer();
+const player: PlayerDetails = await sdk.players.loadPlayer(playerId);
 
 console.log(player.name);
 ```

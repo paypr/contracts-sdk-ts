@@ -19,7 +19,7 @@ import { getSdk } from '@paypr/contracts-sdk-ts/dist';
 
 const sdk = getSdk();
 
-// access the Accounts SDK functionality with sdk.accounts
+sdk.accounts. // access the Accounts SDK functionality
 ```
 
 ## Information
