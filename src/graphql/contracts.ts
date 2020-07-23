@@ -1,27 +1,40 @@
 import gql from 'graphql-tag';
-import { ApiContractDetails, Sdk } from '../generated/graphql';
+import { ApiContractDetails, ApiContractReference, Sdk } from '../generated/graphql';
 import { ArgumentError } from '../utils/errors';
+
+/** Reference to a Contract */
+export type ContractReference = ApiContractReference;
 
 /** Details for the Contract */
 export type ContractDetails = ApiContractDetails;
 
+export const contractReferenceFragment = gql`
+  fragment ContractReference on Contract {
+    id
+    contractType
+    address
+
+    ... on BaseContract {
+      account
+      name
+    }
+
+    ... on DisableableContract {
+      disabled
+    }
+  }
+`;
+
 export const contractDetailsFragment = gql`
   fragment ContractDetails on Contract {
-    id
-    address
-    contractType
+    ...ContractReference
+
     discoverable
     createdAt
     updatedAt
 
     ... on BaseContract {
-      account
-      name
       description
-    }
-
-    ... on DisableableContract {
-      disabled
     }
 
     ... on SkillConstrained {
@@ -53,6 +66,7 @@ export const contractDetailsFragment = gql`
       totalSupply
       accountBalance
     }
+    ${contractReferenceFragment}
   }
 
   fragment SkillLevelReference on SkillLevel {

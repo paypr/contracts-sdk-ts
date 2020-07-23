@@ -1,1 +1,1 @@
-export { getContractsSdk } from './sdk';
+export { getSdk } from './sdk';
