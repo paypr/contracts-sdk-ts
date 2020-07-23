@@ -125,7 +125,7 @@ export interface PlayersSdk {
    *
    * @returns a promise to a submission id
    */
-  estimateAcquireNextSkillLevelForPlayer: (
+  estimateAcquireNextSkillLevel: (
     playerId: string,
     skillContractId: string,
     options?: AcquireNextSkillLevelForPlayerOptions,
@@ -141,7 +141,7 @@ export interface PlayersSdk {
    *
    * @returns a promise to a submission id
    */
-  acquireNextSkillLevelForPlayer: (
+  acquireNextSkillLevel: (
     playerId: string,
     skillContractId: string,
     amountsToProvide: ApiConsumableAmountInput[],
@@ -170,9 +170,9 @@ export const getPlayersSdk = (sdk: Sdk): PlayersSdk => ({
   transferConsumableFromPlayer: (playerId, consumableContractId, amount) =>
     transferConsumableFromPlayer(sdk, playerId, consumableContractId, amount),
 
-  estimateAcquireNextSkillLevelForPlayer: (playerId, skillContractId, options?) =>
+  estimateAcquireNextSkillLevel: (playerId, skillContractId, options?) =>
     estimateAcquireNextSkillLevelForPlayer(sdk, playerId, skillContractId, options),
 
-  acquireNextSkillLevelForPlayer: (playerId, skillContractId, amountsToProvide, options?) =>
+  acquireNextSkillLevel: (playerId, skillContractId, amountsToProvide, options?) =>
     acquireNextSkillLevelForPlayer(sdk, playerId, skillContractId, amountsToProvide, options),
 });
