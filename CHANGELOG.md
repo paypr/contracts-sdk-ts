@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.2.0](https://github.com/paypr/contracts-sdk-ts/compare/v0.1.0...v0.2.0) (2020-07-23)
+
+### ⚠ BREAKING CHANGES
+
+- renamed `players.acquireNextSkillLevel`
+
+### Features
+
+- [[#6](https://github.com/paypr/contracts-sdk-ts/issues/6)] rename acquireNextSkillLevel to remove redundant forPlayer ([5ead02f](https://github.com/paypr/contracts-sdk-ts/commit/5ead02fc59dffbc5f9ae59f2b32d889cfebcc659))
+- [[#6](https://github.com/paypr/contracts-sdk-ts/issues/6)] update tsconfig to avoid duplicating graphql tags ([3ad9e12](https://github.com/paypr/contracts-sdk-ts/commit/3ad9e1291a7e8fe0f04dd74fd773c88f3a653e44))
+
 ## [0.1.0](https://github.com/paypr/contracts-sdk-ts/compare/v0.0.3...v0.1.0) (2020-07-23)
 
 ### ⚠ BREAKING CHANGES
