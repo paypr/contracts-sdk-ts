@@ -3,7 +3,7 @@
   "name": "@paypr/contracts-sdk-ts",
   "description": "Contracts SDK for JavaScript and Typescript",
   "license": "UNLICENSED",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "homepage": "https://paypr.money/",
   "repository": {
     "type": "git",
@@ -17,8 +17,8 @@
     "README.md"
   ],
   "scripts": {
-    "clean": "rm -rf dist && rm -rf out",
-    "build": "tsc",
+    "clean": "rm -rf dist && rm -rf src/generated && rm -rf out",
+    "build": "npm run graphql-codegen && tsc",
     "build:watch": "tsc --watch",
     "rebuild": "npm run clean && npm run build",
     "test": "jest",
@@ -30,7 +30,7 @@
     "save-schema-and-codegen": "npm run save-schema && npm run graphql-codegen",
     "pretty": "pretty-quick",
     "release": "standard-version",
-    "prepare": "npm run rebuild && npm run release"
+    "prepublishOnly": "npm run rebuild && npm run release"
   },
   "husky": {
     "hooks": {
@@ -39,16 +39,16 @@
     }
   },
   "dependencies": {
-    "graphql": "^15.1.0",
-    "graphql-request": "^2.1.0-next.1",
-    "graphql-tag": "^2.10.3"
+    "graphql": "15.3.0",
+    "graphql-request": "2.1.0-next.1",
+    "graphql-tag": "2.10.4"
   },
   "devDependencies": {
-    "@graphql-codegen/cli": "1.15.4",
-    "@graphql-codegen/named-operations-object": "1.15.4",
-    "@graphql-codegen/typescript": "1.15.4",
-    "@graphql-codegen/typescript-graphql-request": "1.15.4",
-    "@graphql-codegen/typescript-operations": "1.15.4",
+    "@graphql-codegen/cli": "1.17.3",
+    "@graphql-codegen/named-operations-object": "1.17.3",
+    "@graphql-codegen/typescript": "1.17.3",
+    "@graphql-codegen/typescript-graphql-request": "1.17.3",
+    "@graphql-codegen/typescript-operations": "1.17.3",
     "@types/jest": "26.0.0",
     "@types/node": "14.0.13",
     "cz-conventional-changelog": "3.2.0",
