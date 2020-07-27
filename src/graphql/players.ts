@@ -19,6 +19,8 @@ export const playerReferenceFragment = gql`
 export const playerDetailsFragment = gql`
   fragment PlayerDetails on Player {
     ...PlayerReference
+    version
+    needsUpgrade
     createdAt
     updatedAt
   }
