@@ -1,7 +1,7 @@
 import gql from 'graphql-tag';
 import { ApiContractDetails, Sdk } from '../generated/graphql';
 import { ArgumentError } from '../utils/errors';
-import { consumableAmountReferenceFragment } from './consumableAmount';
+import { consumableAmountAndBalanceReferenceFragment } from './consumableAmount';
 import { contractReferenceFragment } from './contractReference';
 import { skillLevelReferenceFragment } from './skillLevel';
 
@@ -28,13 +28,13 @@ export const contractDetailsFragment = gql`
 
     ... on ConsumableConsumer {
       requiredConsumables {
-        ...ConsumableAmountReference
+        ...ConsumableAmountAndBalanceReference
       }
     }
 
     ... on ConsumableProvider {
       providedConsumables {
-        ...ConsumableAmountReference
+        ...ConsumableAmountAndBalanceReference
       }
     }
 
@@ -52,7 +52,7 @@ export const contractDetailsFragment = gql`
     ${contractReferenceFragment}
   }
 
-  ${consumableAmountReferenceFragment}
+  ${consumableAmountAndBalanceReferenceFragment}
   ${skillLevelReferenceFragment}
 `;
 

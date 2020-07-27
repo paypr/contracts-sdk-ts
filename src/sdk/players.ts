@@ -9,6 +9,7 @@ import {
   TransferConsumableFromPlayerEstimateDetails,
 } from '../graphql/estimates/transferConsumableFromPlayer';
 import { estimateTransferConsumableToPlayer } from '../graphql/estimates/transferConsumableToPlayer';
+import { estimateUpgradePlayer } from '../graphql/estimates/upgradePlayer';
 import { GasAndPayprEstimateDetails, GasEstimateDetails } from '../graphql/gasEstimate';
 import {
   acquireNextSkillLevelForPlayer,
@@ -17,6 +18,7 @@ import {
 import { createPlayer } from '../graphql/mutations/createPlayer';
 import { transferConsumableFromPlayer } from '../graphql/mutations/transferConsumableFromPlayer';
 import { transferConsumableToPlayer } from '../graphql/mutations/transferConsumableToPlayer';
+import { upgradePlayer } from '../graphql/mutations/upgradePlayer';
 import { getPlayerConsumableBalance, getPlayerSkillLevel, loadPlayer, PlayerDetails } from '../graphql/players';
 
 export interface PlayersSdk {
@@ -35,6 +37,22 @@ export interface PlayersSdk {
    * @returns a promise to a submission id
    */
   createPlayer: (input: ApiCreatePlayerInput) => Promise<string>;
+
+  /**
+   * Estimate upgrading a player
+   * @param playerId the player id
+   *
+   * @returns a promise to the estimate
+   */
+  estimateUpgradePlayer: (playerId: string) => Promise<GasEstimateDetails>;
+
+  /**
+   * Upgrade the given player to the latest version
+   * @param playerId the player id
+   *
+   * @returns a promise to a submission id
+   */
+  upgradePlayer: (playerId: string) => Promise<string>;
 
   /**
    * Loads player details by ID
@@ -152,6 +170,9 @@ export interface PlayersSdk {
 export const getPlayersSdk = (sdk: Sdk): PlayersSdk => ({
   estimateCreatePlayer: (input: ApiCreatePlayerInput) => estimateCreatePlayer(sdk, input),
   createPlayer: (input: ApiCreatePlayerInput) => createPlayer(sdk, input),
+
+  estimateUpgradePlayer: (playerId: string) => estimateUpgradePlayer(sdk, playerId),
+  upgradePlayer: (playerId: string) => upgradePlayer(sdk, playerId),
 
   loadPlayer: (playerId) => loadPlayer(sdk, playerId),
 

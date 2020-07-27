@@ -86,6 +86,30 @@ const player: PlayerReference = submission.player;
 console.log(player.name);
 ```
 
+### Estimate upgrade the player
+
+Estimates upgrading the player with the given ID.
+
+```typescript
+const estimate = await sdk.players.estimateUpgradePlayer(playerId);
+
+console.log(estimate.gasCost);
+```
+
+### Upgrade a player
+
+Upgrades the player with the given ID.
+
+```typescript
+const submissionId = await sdk.players.upgradePlayer(playerId);
+
+const submission: SubmissionDetails = await sdk.submissions.waitForSubmissionDone(submissionId);
+
+const player: PlayerReference = submission.player;
+
+console.log(player.version);
+```
+
 ### Estimate transfer consumable to a player
 
 Estimates the cost in dollars and Paypr to transfer a given amount of consumable

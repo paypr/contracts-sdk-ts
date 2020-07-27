@@ -36,21 +36,24 @@ type AcquireNextSkillLevelForPlayerResponse implements SubmissionResponse {
   submission: Submission!
 }
 
-type ActivityContract implements BaseModel & BaseAccountModel & Contract & BaseContract & DisableableContract & SkillConstrained & ConsumableConsumer & ConsumableProvider {
+type ActivityContract implements BaseModel & BaseAccountModel & Contract & BaseContract & ConsumableHolder & ConsumableConsumer & ConsumableProvider & DisableableContract & SkillConstrained {
   id: ID!
   createdAt: ISODateTime!
   updatedAt: ISODateTime!
   contractType: ContractType!
   version: Int!
+  needsUpgrade: Boolean!
   address: ContractAddress!
   discoverable: Boolean!
   name: String!
   description: String!
   uri: String!
   account: String!
+  consumableBalance(consumableContractId: ID!): Float!
+  consumableBalances(consumableContractIds: [ID!]!): [ConsumableAmount!]!
+  requiredConsumables: [ConsumableAmountAndBalance!]!
+  providedConsumables: [ConsumableAmountAndBalance!]!
   requiredSkills: [SkillLevel!]!
-  requiredConsumables: [ConsumableAmount!]!
-  providedConsumables: [ConsumableAmount!]!
   disabled: Boolean!
 }
 
@@ -96,22 +99,25 @@ type ApiKeyEdge {
   cursor: String!
 }
 
-type ArtifactContract implements BaseModel & BaseAccountModel & Contract & BaseContract & DisableableContract & ConsumableProvider {
+type ArtifactContract implements BaseModel & BaseAccountModel & Contract & BaseContract & ConsumableHolder & ConsumableProvider & DisableableContract {
   id: ID!
   createdAt: ISODateTime!
   updatedAt: ISODateTime!
   contractType: ContractType!
   version: Int!
+  needsUpgrade: Boolean!
   address: ContractAddress!
   discoverable: Boolean!
   name: String!
   description: String!
   uri: String!
   account: String!
+  consumableBalance(consumableContractId: ID!): Float!
+  consumableBalances(consumableContractIds: [ID!]!): [ConsumableAmount!]!
+  providedConsumables: [ConsumableAmountAndBalance!]!
   baseUri: String!
   symbol: String!
   initialUses: Int!
-  providedConsumables: [ConsumableAmount!]!
   disabled: Boolean!
 }
 
@@ -127,6 +133,7 @@ interface BaseContract {
   updatedAt: ISODateTime!
   contractType: ContractType!
   version: Int!
+  needsUpgrade: Boolean!
   address: ContractAddress!
   discoverable: Boolean!
   name: String!
@@ -146,13 +153,21 @@ type ConsumableAmount {
   amount: Float!
 }
 
+type ConsumableAmountAndBalance {
+  consumable: ConsumableContract!
+  amount: Float!
+  balance: Float!
+}
+
 input ConsumableAmountInput {
   consumableContractId: ID!
   amount: Float!
 }
 
 interface ConsumableConsumer {
-  requiredConsumables: [ConsumableAmount!]!
+  consumableBalance(consumableContractId: ID!): Float!
+  consumableBalances(consumableContractIds: [ID!]!): [ConsumableAmount!]!
+  requiredConsumables: [ConsumableAmountAndBalance!]!
 }
 
 type ConsumableContract implements BaseModel & BaseAccountModel & Contract & BaseContract & DisableableContract {
@@ -161,6 +176,7 @@ type ConsumableContract implements BaseModel & BaseAccountModel & Contract & Bas
   updatedAt: ISODateTime!
   contractType: ContractType!
   version: Int!
+  needsUpgrade: Boolean!
   address: ContractAddress!
   discoverable: Boolean!
   name: String!
@@ -176,8 +192,15 @@ type ConsumableContract implements BaseModel & BaseAccountModel & Contract & Bas
   disabled: Boolean!
 }
 
+interface ConsumableHolder {
+  consumableBalance(consumableContractId: ID!): Float!
+  consumableBalances(consumableContractIds: [ID!]!): [ConsumableAmount!]!
+}
+
 interface ConsumableProvider {
-  providedConsumables: [ConsumableAmount!]!
+  consumableBalance(consumableContractId: ID!): Float!
+  consumableBalances(consumableContractIds: [ID!]!): [ConsumableAmount!]!
+  providedConsumables: [ConsumableAmountAndBalance!]!
 }
 
 interface Contract {
@@ -186,6 +209,7 @@ interface Contract {
   updatedAt: ISODateTime!
   contractType: ContractType!
   version: Int!
+  needsUpgrade: Boolean!
   address: ContractAddress!
   discoverable: Boolean!
 }
@@ -381,48 +405,17 @@ type EnableContractResponse implements SubmissionResponse {
   submission: Submission!
 }
 
-type EstimateActivityResponse implements GasEstimateResponse {
-  gasAmount: Int!
-  gasCost: Float!
-  balance: Float!
-  prepayCharge: Float
-}
-
-type EstimateArtifactResponse implements GasEstimateResponse {
-  gasAmount: Int!
-  gasCost: Float!
-  balance: Float!
-  prepayCharge: Float
-}
-
-type EstimateConsumableResponse implements GasEstimateResponse {
-  gasAmount: Int!
-  gasCost: Float!
-  balance: Float!
-  prepayCharge: Float
-}
-
-type EstimateCreatePlayerResponse implements GasEstimateResponse {
-  gasAmount: Int!
-  gasCost: Float!
-  balance: Float!
-  prepayCharge: Float
-}
-
-type EstimatePurchasePayprResponse implements GasEstimateResponse {
-  gasAmount: Int!
-  gasCost: Float!
-  balance: Float!
-  prepayCharge: Float
-  payprCost: Float!
-  totalCost: Float!
-}
-
 type Estimates {
   createActivity(input: CreateActivityInput!): CreateActivityEstimate!
   createArtifact(input: CreateArtifactInput!): CreateArtifactEstimate!
   createConsumable(input: CreateConsumableInput!): CreateConsumableEstimate!
   createSkill(input: CreateSkillInput!): CreateSkillEstimate!
+  transferConsumableFromSkill(
+    skillContractId: ID!
+    consumableContractId: ID!
+    amount: Float!
+  ): TransferConsumableFromSkillEstimate!
+  upgradeContract(contractId: ID!): UpgradeContractEstimate!
   purchasePaypr(amount: Float!): PurchasePayprEstimate!
   createPlayer(input: CreatePlayerInput!): CreatePlayerEstimate!
   acquireNextSkillLevelForPlayer(
@@ -440,30 +433,7 @@ type Estimates {
     consumableContractId: ID!
     amount: Float!
   ): TransferConsumableToPlayerEstimate!
-}
-
-type EstimateSkillResponse implements GasEstimateResponse {
-  gasAmount: Int!
-  gasCost: Float!
-  balance: Float!
-  prepayCharge: Float
-}
-
-type EstimateTransferConsumableFromPlayerResponse implements GasEstimateResponse {
-  gasAmount: Int!
-  gasCost: Float!
-  balance: Float!
-  prepayCharge: Float
-  playerConsumableBalance: Float!
-}
-
-type EstimateTransferConsumableToPlayerResponse implements GasEstimateResponse & GasAndPayprEstimateResponse {
-  gasAmount: Int!
-  gasCost: Float!
-  balance: Float!
-  prepayCharge: Float
-  payprAmount: Float!
-  payprBalance: Float!
+  upgradePlayer(playerId: ID!): UpgradePlayerEstimate!
 }
 
 interface GasAndPayprEstimate {
@@ -475,23 +445,7 @@ interface GasAndPayprEstimate {
   payprBalance: Float!
 }
 
-interface GasAndPayprEstimateResponse {
-  gasAmount: Int!
-  gasCost: Float!
-  balance: Float!
-  prepayCharge: Float
-  payprAmount: Float!
-  payprBalance: Float!
-}
-
 interface GasEstimate {
-  gasAmount: Int!
-  gasCost: Float!
-  balance: Float!
-  prepayCharge: Float
-}
-
-interface GasEstimateResponse {
   gasAmount: Int!
   gasCost: Float!
   balance: Float!
@@ -512,22 +466,20 @@ type Mutation {
   createApiKey: CreateApiKeyResponse!
   deleteApiKey(apiKeyId: ID!): DeleteApiKeyResponse!
   createActivity(input: CreateActivityInput!): CreateActivityResponse!
-  estimateActivity(input: CreateActivityInput!): EstimateActivityResponse! @deprecated(reason: "use query estimates")
   createArtifact(input: CreateArtifactInput!): CreateArtifactResponse!
-  estimateArtifact(input: CreateArtifactInput!): EstimateArtifactResponse! @deprecated(reason: "use query estimates")
   createConsumable(input: CreateConsumableInput!): CreateConsumableResponse!
-  estimateConsumable(input: CreateConsumableInput!): EstimateConsumableResponse!
-    @deprecated(reason: "use query estimates")
   createSkill(input: CreateSkillInput!): CreateSkillResponse!
-  estimateSkill(input: CreateSkillInput!): EstimateSkillResponse! @deprecated(reason: "use query estimates")
-  publishContract(id: ID!): PublishContractResponse!
   disableContract(id: ID!): DisableContractResponse!
   enableContract(id: ID!): EnableContractResponse!
-  estimatePurchasePaypr(amount: Float!): EstimatePurchasePayprResponse! @deprecated(reason: "use query estimates")
+  publishContract(id: ID!): PublishContractResponse!
+  transferConsumableFromSkill(
+    skillContractId: ID!
+    consumableContractId: ID!
+    amount: Float!
+  ): TransferConsumableFromSkillResponse!
+  upgradeContract(contractId: ID!): UpgradeContractResponse!
   purchasePaypr(amount: Float!): PurchasePayprResponse!
   createPlayer(input: CreatePlayerInput!): CreatePlayerResponse!
-  estimateCreatePlayer(input: CreatePlayerInput!): EstimateCreatePlayerResponse!
-    @deprecated(reason: "use query estimates")
   acquireNextSkillLevelForPlayer(
     playerId: ID!
     skillContractId: ID!
@@ -539,21 +491,12 @@ type Mutation {
     consumableContractId: ID!
     amount: Float!
   ): TransferConsumableFromPlayerResponse!
-  estimateTransferConsumableFromPlayer(
-    playerId: ID!
-    consumableContractId: ID!
-    amount: Float!
-  ): EstimateTransferConsumableFromPlayerResponse! @deprecated(reason: "use query estimates")
   transferConsumableToPlayer(
     playerId: ID!
     consumableContractId: ID!
     amount: Float!
   ): TransferConsumableToPlayerResponse!
-  estimateTransferConsumableToPlayer(
-    playerId: ID!
-    consumableContractId: ID!
-    amount: Float!
-  ): EstimateTransferConsumableToPlayerResponse! @deprecated(reason: "use query estimates")
+  upgradePlayer(playerId: ID!): UpgradePlayerResponse!
 }
 
 """
@@ -587,6 +530,8 @@ type Player {
   updatedAt: ISODateTime!
   name: String!
   address: ContractAddress!
+  version: Int!
+  needsUpgrade: Boolean!
   consumableBalance(consumableContractId: ID!): Float!
   consumableBalances(consumableContractIds: [ID!]!): [ConsumableAmount!]!
   skillLevel(skillContractId: ID!): Int!
@@ -668,20 +613,23 @@ interface SkillConstrained {
   requiredSkills: [SkillLevel!]!
 }
 
-type SkillContract implements BaseModel & BaseAccountModel & Contract & BaseContract & DisableableContract & SkillConstrained & ConsumableConsumer {
+type SkillContract implements BaseModel & BaseAccountModel & Contract & BaseContract & ConsumableHolder & ConsumableConsumer & DisableableContract & SkillConstrained {
   id: ID!
   createdAt: ISODateTime!
   updatedAt: ISODateTime!
   contractType: ContractType!
   version: Int!
+  needsUpgrade: Boolean!
   address: ContractAddress!
   discoverable: Boolean!
   name: String!
   description: String!
   uri: String!
   account: String!
+  consumableBalance(consumableContractId: ID!): Float!
+  consumableBalances(consumableContractIds: [ID!]!): [ConsumableAmount!]!
+  requiredConsumables: [ConsumableAmountAndBalance!]!
   requiredSkills: [SkillLevel!]!
-  requiredConsumables: [ConsumableAmount!]!
   disabled: Boolean!
 }
 
@@ -866,6 +814,18 @@ type TransferConsumableFromPlayerResponse implements SubmissionResponse {
   submission: Submission!
 }
 
+type TransferConsumableFromSkillEstimate implements GasEstimate {
+  gasAmount: Int!
+  gasCost: Float!
+  balance: Float!
+  prepayCharge: Float
+  skillConsumableBalance: Float!
+}
+
+type TransferConsumableFromSkillResponse implements SubmissionResponse {
+  submission: Submission!
+}
+
 type TransferConsumableToPlayerEstimate implements GasEstimate & GasAndPayprEstimate {
   gasAmount: Int!
   gasCost: Float!
@@ -889,4 +849,26 @@ type UpdateAccountBillingResponse {
 
 type UpdateAccountResponse {
   account: Account!
+}
+
+type UpgradeContractEstimate implements GasEstimate {
+  gasAmount: Int!
+  gasCost: Float!
+  balance: Float!
+  prepayCharge: Float
+}
+
+type UpgradeContractResponse implements SubmissionResponse {
+  submission: Submission!
+}
+
+type UpgradePlayerEstimate implements GasEstimate {
+  gasAmount: Int!
+  gasCost: Float!
+  balance: Float!
+  prepayCharge: Float
+}
+
+type UpgradePlayerResponse implements SubmissionResponse {
+  submission: Submission!
 }

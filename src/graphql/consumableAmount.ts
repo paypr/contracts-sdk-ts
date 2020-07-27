@@ -12,3 +12,16 @@ export const consumableAmountReferenceFragment = gql`
   }
   ${contractReferenceFragment}
 `;
+
+export const consumableAmountAndBalanceReferenceFragment = gql`
+  fragment ConsumableAmountAndBalanceReference on ConsumableAmountAndBalance {
+    consumable {
+      ...ContractReference
+      exchangeRate
+    }
+
+    amount
+    balance
+  }
+  ${contractReferenceFragment}
+`;
