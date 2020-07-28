@@ -72,3 +72,35 @@ gql`
   }
   ${contractDetailsFragment}
 `;
+
+export const getContractConsumableBalance = async (
+  sdk: Sdk,
+  contractId: string,
+  consumableContractId: string,
+): Promise<number> => {
+  const { contract } = await sdk.getContractConsumableBalance({ contractId, consumableContractId });
+  if (!contract) {
+    throw new ArgumentError(`Contract not found: ${contractId}`);
+  }
+  if (!('consumableBalance' in contract)) {
+    return 0;
+  }
+  const { consumableBalance } = contract;
+  return consumableBalance;
+};
+
+gql`
+  query getContractConsumableBalance($contractId: ID!, $consumableContractId: ID!) {
+    contract(id: $contractId) {
+      ... on ActivityContract {
+        consumableBalance(consumableContractId: $consumableContractId)
+      }
+      ... on ArtifactContract {
+        consumableBalance(consumableContractId: $consumableContractId)
+      }
+      ... on SkillContract {
+        consumableBalance(consumableContractId: $consumableContractId)
+      }
+    }
+  }
+`;
