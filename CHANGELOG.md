@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.2](https://github.com/paypr/contracts-sdk-ts/compare/v0.2.1...v0.2.2) (2020-07-28)
+
+### Features
+
+- [[#6](https://github.com/paypr/contracts-sdk-ts/issues/6)] add ability to transfer consumable from contracts ([29b104d](https://github.com/paypr/contracts-sdk-ts/commit/29b104d01aaee049bae699f08d75499a51a6b798))
+
 ### [0.2.1](https://github.com/paypr/contracts-sdk-ts/compare/v0.2.0...v0.2.1) (2020-07-27)
 
 ### Features
