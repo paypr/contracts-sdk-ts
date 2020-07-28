@@ -14,6 +14,8 @@
   - [Transfer consumable to a player](#transfer-consumable-to-a-player)
   - [Estimate transfer consumable from a player](#estimate-transfer-consumable-from-a-player)
   - [Transfer consumable from a player](#transfer-consumable-from-a-player)
+  - [Estimate upgrade player](#estimate-upgrade-a-player)
+  - [Upgrade a player](#upgrade-a-player)
 
 ## Access
 
@@ -86,7 +88,7 @@ const player: PlayerReference = submission.player;
 console.log(player.name);
 ```
 
-### Estimate upgrade the player
+### Estimate upgrade a player
 
 Estimates upgrading the player with the given ID.
 

@@ -5,6 +5,9 @@
 - [Access](#access)
 - [Information](#information)
   - [Load contract details](#load-contract-details)
+  - [Get consumable balance](#get-consumable-balance)
+  - [Estimate transfer consumable from a contract](#estimate-transfer-consumable-from-a-contract)
+  - [Transfer consumable from a contract](#transfer-consumable-from-a-contract)
 - [Actions](#actions)
 
 ## Access
@@ -32,6 +35,38 @@ const contract: ContractDetails = await sdk.contracts.loadContract(contractId);
 console.log(contract.name);
 ```
 
+### Get consumable balance
+
+Gets the consumable balance for a given contract.
+
+```typescript
+const contractConsumableBalance: number = await sdk.contracts.getConsumableBalance(contractId, consumableContractId);
+
+console.log('Current balance:', contractConsumableBalance);
+```
+
 ## Actions
 
-No actions at this time.
+### Estimate transfer consumable from a contract
+
+Estimates the cost to transfer a given amount of consumable from a contract.
+
+```typescript
+const estimate = await sdk.contracts.estimateTransferConsumableFromContract(contractId, consumableContractId, amount);
+
+console.log('Gas cost:', estimate.gasCost);
+console.log('Contract consumable balance:', estimate.contractConsumableBalance);
+```
+
+### Transfer consumable from a contract
+
+Transfers a specific amount of consumable from a contract to your account.
+
+```typescript
+const submissionId = await sdk.contracts.transferConsumableFromContract(contractId, consumableContractId, amount);
+
+await sdk.submissions.waitForSubmissionDone(submissionId);
+
+console.log('Transfer from contract is complete!');
+console.log('New balance:', await sdk.contracts.getConsumableBalance(contractId, consumableContractId));
+```
