@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.3.0](https://github.com/paypr/contracts-sdk-ts/compare/v0.2.2...v0.3.0) (2020-08-16)
+
+### ⚠ BREAKING CHANGES
+
+- playerConsumableBalance was renamed to consumableBalance
+
+### Features
+
+- [[#12](https://github.com/paypr/contracts-sdk-ts/issues/12)] add ability to execute an activity for a player ([9984d3b](https://github.com/paypr/contracts-sdk-ts/commit/9984d3b7a50f96bfe27c53759f9c16cea20db7b7))
+
+* [[#12](https://github.com/paypr/contracts-sdk-ts/issues/12)] fix docs for playerConsumableBalance rename ([c9b257d](https://github.com/paypr/contracts-sdk-ts/commit/c9b257de81e661facce7f86d1b2b56f476feeba9))
+
 ### [0.2.2](https://github.com/paypr/contracts-sdk-ts/compare/v0.2.1...v0.2.2) (2020-07-28)
 
 ### Features
