@@ -12,13 +12,10 @@ export const contractDetailsFragment = gql`
   fragment ContractDetails on Contract {
     ...ContractReference
 
+    description
     discoverable
     createdAt
     updatedAt
-
-    ... on BaseContract {
-      description
-    }
 
     ... on SkillConstrained {
       requiredSkills {
@@ -92,15 +89,7 @@ export const getContractConsumableBalance = async (
 gql`
   query getContractConsumableBalance($contractId: ID!, $consumableContractId: ID!) {
     contract(id: $contractId) {
-      ... on ActivityContract {
-        consumableBalance(consumableContractId: $consumableContractId)
-      }
-      ... on ArtifactContract {
-        consumableBalance(consumableContractId: $consumableContractId)
-      }
-      ... on SkillContract {
-        consumableBalance(consumableContractId: $consumableContractId)
-      }
+      consumableBalance(consumableContractId: $consumableContractId)
     }
   }
 `;

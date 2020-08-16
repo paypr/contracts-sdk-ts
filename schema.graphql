@@ -17,40 +17,61 @@ type Account implements BaseModel {
   hasPaymentInfo: Boolean!
   balance: Float!
   payprBalance: Float!
+  consumableBalance(consumableContractId: ID!): Float!
+  consumableBalances(consumableContractIds: [ID!]!): [ConsumableAmount!]!
   apiKeys: ApiKeyConnection!
-  contracts(contractType: ContractType): ContractConnection!
+  contracts(contractType: ContractType, contractTypes: [ContractType!]): ContractConnection!
   submissions(currentStatus: SubmissionStatus, onlyInProgress: Boolean): SubmissionConnection!
   players: PlayerConnection!
   transactions: TransactionConnection!
 }
 
 type AcquireNextSkillLevelForPlayerEstimate implements GasEstimate {
+  """
+  The amount of gas it will take to execute the Ethereum transaction
+  """
   gasAmount: Int!
+
+  """
+  The cost of the gas to execute the Ethereum transaction
+  """
   gasCost: Float!
+
+  """
+  The current account balance, in USD
+  """
   balance: Float!
+
+  """
+  The estimated amount that will be charged to the credit card on file to complete the transaction, in USD
+  """
   prepayCharge: Float
-  consumableAmountsNeeded: [ConsumableAmount!]!
+
+  """
+  Consumables that must be provided by the player to acquire the skill, along with the player's balance for each
+  """
+  consumableAmountsNeeded: [ConsumableAmountAndBalance!]!
 }
 
 type AcquireNextSkillLevelForPlayerResponse implements SubmissionResponse {
   submission: Submission!
 }
 
-type ActivityContract implements BaseModel & BaseAccountModel & Contract & BaseContract & ConsumableHolder & ConsumableConsumer & ConsumableProvider & DisableableContract & SkillConstrained {
+type ActivityContract implements BaseModel & BaseAccountModel & ContractLike & Contract & ConsumableConsumer & ConsumableProvider & DisableableContract & SkillConstrained {
   id: ID!
   createdAt: ISODateTime!
   updatedAt: ISODateTime!
-  contractType: ContractType!
+  address: ContractAddress!
   version: Int!
   needsUpgrade: Boolean!
-  address: ContractAddress!
+  consumableBalance(consumableContractId: ID!): Float!
+  consumableBalances(consumableContractIds: [ID!]!): [ConsumableAmount!]!
+  contractType: ContractType!
   discoverable: Boolean!
   name: String!
   description: String!
   uri: String!
   account: String!
-  consumableBalance(consumableContractId: ID!): Float!
-  consumableBalances(consumableContractIds: [ID!]!): [ConsumableAmount!]!
   requiredConsumables: [ConsumableAmountAndBalance!]!
   providedConsumables: [ConsumableAmountAndBalance!]!
   requiredSkills: [SkillLevel!]!
@@ -99,21 +120,21 @@ type ApiKeyEdge {
   cursor: String!
 }
 
-type ArtifactContract implements BaseModel & BaseAccountModel & Contract & BaseContract & ConsumableHolder & ConsumableProvider & DisableableContract {
+type ArtifactContract implements BaseModel & BaseAccountModel & ContractLike & Contract & ConsumableProvider & DisableableContract {
   id: ID!
   createdAt: ISODateTime!
   updatedAt: ISODateTime!
-  contractType: ContractType!
+  address: ContractAddress!
   version: Int!
   needsUpgrade: Boolean!
-  address: ContractAddress!
+  consumableBalance(consumableContractId: ID!): Float!
+  consumableBalances(consumableContractIds: [ID!]!): [ConsumableAmount!]!
+  contractType: ContractType!
   discoverable: Boolean!
   name: String!
   description: String!
   uri: String!
   account: String!
-  consumableBalance(consumableContractId: ID!): Float!
-  consumableBalances(consumableContractIds: [ID!]!): [ConsumableAmount!]!
   providedConsumables: [ConsumableAmountAndBalance!]!
   baseUri: String!
   symbol: String!
@@ -125,21 +146,6 @@ interface BaseAccountModel {
   id: ID!
   createdAt: ISODateTime!
   updatedAt: ISODateTime!
-}
-
-interface BaseContract {
-  id: ID!
-  createdAt: ISODateTime!
-  updatedAt: ISODateTime!
-  contractType: ContractType!
-  version: Int!
-  needsUpgrade: Boolean!
-  address: ContractAddress!
-  discoverable: Boolean!
-  name: String!
-  description: String!
-  uri: String!
-  account: String!
 }
 
 interface BaseModel {
@@ -165,19 +171,19 @@ input ConsumableAmountInput {
 }
 
 interface ConsumableConsumer {
-  consumableBalance(consumableContractId: ID!): Float!
-  consumableBalances(consumableContractIds: [ID!]!): [ConsumableAmount!]!
   requiredConsumables: [ConsumableAmountAndBalance!]!
 }
 
-type ConsumableContract implements BaseModel & BaseAccountModel & Contract & BaseContract & DisableableContract {
+type ConsumableContract implements BaseModel & BaseAccountModel & ContractLike & Contract & DisableableContract {
   id: ID!
   createdAt: ISODateTime!
   updatedAt: ISODateTime!
-  contractType: ContractType!
+  address: ContractAddress!
   version: Int!
   needsUpgrade: Boolean!
-  address: ContractAddress!
+  consumableBalance(consumableContractId: ID!): Float!
+  consumableBalances(consumableContractIds: [ID!]!): [ConsumableAmount!]!
+  contractType: ContractType!
   discoverable: Boolean!
   name: String!
   description: String!
@@ -192,14 +198,7 @@ type ConsumableContract implements BaseModel & BaseAccountModel & Contract & Bas
   disabled: Boolean!
 }
 
-interface ConsumableHolder {
-  consumableBalance(consumableContractId: ID!): Float!
-  consumableBalances(consumableContractIds: [ID!]!): [ConsumableAmount!]!
-}
-
 interface ConsumableProvider {
-  consumableBalance(consumableContractId: ID!): Float!
-  consumableBalances(consumableContractIds: [ID!]!): [ConsumableAmount!]!
   providedConsumables: [ConsumableAmountAndBalance!]!
 }
 
@@ -207,11 +206,17 @@ interface Contract {
   id: ID!
   createdAt: ISODateTime!
   updatedAt: ISODateTime!
-  contractType: ContractType!
+  address: ContractAddress!
   version: Int!
   needsUpgrade: Boolean!
-  address: ContractAddress!
+  consumableBalance(consumableContractId: ID!): Float!
+  consumableBalances(consumableContractIds: [ID!]!): [ConsumableAmount!]!
+  contractType: ContractType!
   discoverable: Boolean!
+  name: String!
+  description: String!
+  uri: String!
+  account: String!
 }
 
 scalar ContractAddress
@@ -256,6 +261,14 @@ input ContractInfoInput {
   description: String
 }
 
+interface ContractLike {
+  address: ContractAddress!
+  version: Int!
+  needsUpgrade: Boolean!
+  consumableBalance(consumableContractId: ID!): Float!
+  consumableBalances(consumableContractIds: [ID!]!): [ConsumableAmount!]!
+}
+
 enum ContractType {
   """
   Activity contract
@@ -284,9 +297,24 @@ enum ContractType {
 }
 
 type CreateActivityEstimate implements GasEstimate {
+  """
+  The amount of gas it will take to execute the Ethereum transaction
+  """
   gasAmount: Int!
+
+  """
+  The cost of the gas to execute the Ethereum transaction
+  """
   gasCost: Float!
+
+  """
+  The current account balance, in USD
+  """
   balance: Float!
+
+  """
+  The estimated amount that will be charged to the credit card on file to complete the transaction, in USD
+  """
   prepayCharge: Float
 }
 
@@ -308,9 +336,24 @@ type CreateApiKeyResponse {
 }
 
 type CreateArtifactEstimate implements GasEstimate {
+  """
+  The amount of gas it will take to execute the Ethereum transaction
+  """
   gasAmount: Int!
+
+  """
+  The cost of the gas to execute the Ethereum transaction
+  """
   gasCost: Float!
+
+  """
+  The current account balance, in USD
+  """
   balance: Float!
+
+  """
+  The estimated amount that will be charged to the credit card on file to complete the transaction, in USD
+  """
   prepayCharge: Float
 }
 
@@ -327,9 +370,24 @@ type CreateArtifactResponse implements SubmissionResponse {
 }
 
 type CreateConsumableEstimate implements GasEstimate {
+  """
+  The amount of gas it will take to execute the Ethereum transaction
+  """
   gasAmount: Int!
+
+  """
+  The cost of the gas to execute the Ethereum transaction
+  """
   gasCost: Float!
+
+  """
+  The current account balance, in USD
+  """
   balance: Float!
+
+  """
+  The estimated amount that will be charged to the credit card on file to complete the transaction, in USD
+  """
   prepayCharge: Float
 }
 
@@ -345,9 +403,24 @@ type CreateConsumableResponse implements SubmissionResponse {
 }
 
 type CreatePlayerEstimate implements GasEstimate {
+  """
+  The amount of gas it will take to execute the Ethereum transaction
+  """
   gasAmount: Int!
+
+  """
+  The cost of the gas to execute the Ethereum transaction
+  """
   gasCost: Float!
+
+  """
+  The current account balance, in USD
+  """
   balance: Float!
+
+  """
+  The estimated amount that will be charged to the credit card on file to complete the transaction, in USD
+  """
   prepayCharge: Float
 }
 
@@ -360,9 +433,24 @@ type CreatePlayerResponse implements SubmissionResponse {
 }
 
 type CreateSkillEstimate implements GasEstimate {
+  """
+  The amount of gas it will take to execute the Ethereum transaction
+  """
   gasAmount: Int!
+
+  """
+  The cost of the gas to execute the Ethereum transaction
+  """
   gasCost: Float!
+
+  """
+  The current account balance, in USD
+  """
   balance: Float!
+
+  """
+  The estimated amount that will be charged to the credit card on file to complete the transaction, in USD
+  """
   prepayCharge: Float
 }
 
@@ -410,11 +498,16 @@ type Estimates {
   createArtifact(input: CreateArtifactInput!): CreateArtifactEstimate!
   createConsumable(input: CreateConsumableInput!): CreateConsumableEstimate!
   createSkill(input: CreateSkillInput!): CreateSkillEstimate!
-  transferConsumableFromSkill(
-    skillContractId: ID!
+  transferConsumableFromContract(
+    contractId: ID!
     consumableContractId: ID!
     amount: Float!
-  ): TransferConsumableFromSkillEstimate!
+  ): TransferConsumableFromContractEstimate!
+  transferConsumableToContract(
+    contractId: ID!
+    consumableContractId: ID!
+    amount: Float!
+  ): TransferConsumableToContractEstimate!
   upgradeContract(contractId: ID!): UpgradeContractEstimate!
   purchasePaypr(amount: Float!): PurchasePayprEstimate!
   createPlayer(input: CreatePlayerInput!): CreatePlayerEstimate!
@@ -423,6 +516,11 @@ type Estimates {
     skillContractId: ID!
     itemsToUse: [ItemInput!]
   ): AcquireNextSkillLevelForPlayerEstimate!
+  executeActivityForPlayer(
+    playerId: ID!
+    activityContractId: ID!
+    itemsToUse: [ItemInput!]
+  ): ExecuteActivityForPlayerEstimate!
   transferConsumableFromPlayer(
     playerId: ID!
     consumableContractId: ID!
@@ -436,19 +534,93 @@ type Estimates {
   upgradePlayer(playerId: ID!): UpgradePlayerEstimate!
 }
 
-interface GasAndPayprEstimate {
+type ExecuteActivityForPlayerEstimate implements GasEstimate {
+  """
+  The amount of gas it will take to execute the Ethereum transaction
+  """
   gasAmount: Int!
+
+  """
+  The cost of the gas to execute the Ethereum transaction
+  """
   gasCost: Float!
+
+  """
+  The current account balance, in USD
+  """
   balance: Float!
+
+  """
+  The estimated amount that will be charged to the credit card on file to complete the transaction, in USD
+  """
   prepayCharge: Float
+
+  """
+  Consumables that must be provided by the player to complete the activity, along with the player's balance for each
+  """
+  consumableAmountsNeeded: [ConsumableAmountAndBalance!]!
+
+  """
+  Consumable amounts that will be given to the player when the activity is completed
+  """
+  consumableAmountsProvided: [ConsumableAmount!]!
+}
+
+type ExecuteActivityForPlayerResponse implements SubmissionResponse {
+  submission: Submission!
+}
+
+interface GasAndPayprEstimate {
+  """
+  The amount of gas it will take to execute the Ethereum transaction
+  """
+  gasAmount: Int!
+
+  """
+  The cost of the gas to execute the Ethereum transaction
+  """
+  gasCost: Float!
+
+  """
+  The current account balance, in USD
+  """
+  balance: Float!
+
+  """
+  The estimated amount that will be charged to the credit card on file to complete the transaction, in USD
+  """
+  prepayCharge: Float
+
+  """
+  The amount of Paypr needed to complete the transaction
+  """
   payprAmount: Float!
+
+  """
+  The current amount of Paypr in the account
+  """
   payprBalance: Float!
 }
 
 interface GasEstimate {
+  """
+  The amount of gas it will take to execute the Ethereum transaction
+  """
   gasAmount: Int!
+
+  """
+  The cost of the gas to execute the Ethereum transaction
+  """
   gasCost: Float!
+
+  """
+  The current account balance, in USD
+  """
   balance: Float!
+
+  """
+  The estimated amount that will be charged to the credit card on file to complete the transaction, in USD
+  """
   prepayCharge: Float
 }
 
@@ -472,11 +644,16 @@ type Mutation {
   disableContract(id: ID!): DisableContractResponse!
   enableContract(id: ID!): EnableContractResponse!
   publishContract(id: ID!): PublishContractResponse!
-  transferConsumableFromSkill(
-    skillContractId: ID!
+  transferConsumableFromContract(
+    contractId: ID!
     consumableContractId: ID!
     amount: Float!
-  ): TransferConsumableFromSkillResponse!
+  ): TransferConsumableFromContractResponse!
+  transferConsumableToContract(
+    contractId: ID!
+    consumableContractId: ID!
+    amount: Float!
+  ): TransferConsumableToContractResponse!
   upgradeContract(contractId: ID!): UpgradeContractResponse!
   purchasePaypr(amount: Float!): PurchasePayprResponse!
   createPlayer(input: CreatePlayerInput!): CreatePlayerResponse!
@@ -486,6 +663,13 @@ type Mutation {
     itemsToUse: [ItemInput!]
     amountsToProvide: [ConsumableAmountInput!]!
   ): AcquireNextSkillLevelForPlayerResponse!
+  executeActivityForPlayer(
+    playerId: ID!
+    activityContractId: ID!
+    itemsToUse: [ItemInput!]
+    amountsToProvide: [ConsumableAmountInput!]!
+    amountsToConsume: [ConsumableAmountInput!]
+  ): ExecuteActivityForPlayerResponse!
   transferConsumableFromPlayer(
     playerId: ID!
     consumableContractId: ID!
@@ -524,16 +708,16 @@ type PageInfo {
   hasPreviousPage: Boolean!
 }
 
-type Player {
+type Player implements BaseModel & BaseAccountModel & ContractLike {
   id: ID!
   createdAt: ISODateTime!
   updatedAt: ISODateTime!
-  name: String!
   address: ContractAddress!
   version: Int!
   needsUpgrade: Boolean!
   consumableBalance(consumableContractId: ID!): Float!
   consumableBalances(consumableContractIds: [ID!]!): [ConsumableAmount!]!
+  name: String!
   skillLevel(skillContractId: ID!): Int!
   skillLevels(skillContractIds: [ID!]!): [SkillLevel!]!
 }
@@ -587,11 +771,34 @@ type PublishContractResponse {
 }
 
 type PurchasePayprEstimate implements GasEstimate {
+  """
+  The amount of gas it will take to execute the Ethereum transaction
+  """
   gasAmount: Int!
+
+  """
+  The cost of the gas to execute the Ethereum transaction
+  """
   gasCost: Float!
+
+  """
+  The current account balance, in USD
+  """
   balance: Float!
+
+  """
+  The estimated amount that will be charged to the credit card on file to complete the transaction, in USD
+  """
   prepayCharge: Float
+
+  """
+  The cost of the Paypr, in USD
+  """
   payprCost: Float!
+
+  """
+  The total cost, including gas and Paypr costs, in USD
+  """
   totalCost: Float!
 }
 
@@ -601,7 +808,12 @@ type PurchasePayprResponse implements SubmissionResponse {
 
 type Query {
   account: Account!
-  contracts(contractType: ContractType, onlyEnabled: Boolean, showOthers: Boolean): ContractConnection!
+  contracts(
+    contractType: ContractType
+    contractTypes: [ContractType!]
+    onlyEnabled: Boolean
+    showOthers: Boolean
+  ): ContractConnection!
   contract(id: ID!): Contract
   submission(id: ID!): Submission
   player(id: ID!): Player
@@ -613,21 +825,21 @@ interface SkillConstrained {
   requiredSkills: [SkillLevel!]!
 }
 
-type SkillContract implements BaseModel & BaseAccountModel & Contract & BaseContract & ConsumableHolder & ConsumableConsumer & DisableableContract & SkillConstrained {
+type SkillContract implements BaseModel & BaseAccountModel & ContractLike & Contract & ConsumableConsumer & DisableableContract & SkillConstrained {
   id: ID!
   createdAt: ISODateTime!
   updatedAt: ISODateTime!
-  contractType: ContractType!
+  address: ContractAddress!
   version: Int!
   needsUpgrade: Boolean!
-  address: ContractAddress!
+  consumableBalance(consumableContractId: ID!): Float!
+  consumableBalances(consumableContractIds: [ID!]!): [ConsumableAmount!]!
+  contractType: ContractType!
   discoverable: Boolean!
   name: String!
   description: String!
   uri: String!
   account: String!
-  consumableBalance(consumableContractId: ID!): Float!
-  consumableBalances(consumableContractIds: [ID!]!): [ConsumableAmount!]!
   requiredConsumables: [ConsumableAmountAndBalance!]!
   requiredSkills: [SkillLevel!]!
   disabled: Boolean!
@@ -802,37 +1014,144 @@ enum TransactionType {
   UpdateContract
 }
 
-type TransferConsumableFromPlayerEstimate implements GasEstimate {
+type TransferConsumableFromContractEstimate implements GasEstimate {
+  """
+  The amount of gas it will take to execute the Ethereum transaction
+  """
   gasAmount: Int!
+
+  """
+  The cost of the gas to execute the Ethereum transaction
+  """
   gasCost: Float!
+
+  """
+  The current account balance, in USD
+  """
   balance: Float!
+
+  """
+  The estimated amount that will be charged to the credit card on file to complete the transaction, in USD
+  """
   prepayCharge: Float
-  playerConsumableBalance: Float!
+
+  """
+  The contract's current balance of this consumable
+  """
+  consumableBalance: Float!
+}
+
+type TransferConsumableFromContractResponse implements SubmissionResponse {
+  submission: Submission!
+}
+
+type TransferConsumableFromPlayerEstimate implements GasEstimate {
+  """
+  The amount of gas it will take to execute the Ethereum transaction
+  """
+  gasAmount: Int!
+
+  """
+  The cost of the gas to execute the Ethereum transaction
+  """
+  gasCost: Float!
+
+  """
+  The current account balance, in USD
+  """
+  balance: Float!
+
+  """
+  The estimated amount that will be charged to the credit card on file to complete the transaction, in USD
+  """
+  prepayCharge: Float
+
+  """
+  The player's current balance of this consumable
+  """
+  consumableBalance: Float!
 }
 
 type TransferConsumableFromPlayerResponse implements SubmissionResponse {
   submission: Submission!
 }
 
-type TransferConsumableFromSkillEstimate implements GasEstimate {
+type TransferConsumableToContractEstimate implements GasEstimate & GasAndPayprEstimate {
+  """
+  The amount of gas it will take to execute the Ethereum transaction
+  """
   gasAmount: Int!
+
+  """
+  The cost of the gas to execute the Ethereum transaction
+  """
   gasCost: Float!
+
+  """
+  The current account balance, in USD
+  """
   balance: Float!
+
+  """
+  The estimated amount that will be charged to the credit card on file to complete the transaction, in USD
+  """
   prepayCharge: Float
-  skillConsumableBalance: Float!
+
+  """
+  The amount of Paypr needed to complete the transaction
+  """
+  payprAmount: Float!
+
+  """
+  The current amount of Paypr in the account
+  """
+  payprBalance: Float!
+
+  """
+  The account's current balance of this consumable
+  """
+  consumableBalance: Float!
 }
 
-type TransferConsumableFromSkillResponse implements SubmissionResponse {
+type TransferConsumableToContractResponse implements SubmissionResponse {
   submission: Submission!
 }
 
 type TransferConsumableToPlayerEstimate implements GasEstimate & GasAndPayprEstimate {
+  """
+  The amount of gas it will take to execute the Ethereum transaction
+  """
   gasAmount: Int!
+
+  """
+  The cost of the gas to execute the Ethereum transaction
+  """
   gasCost: Float!
+
+  """
+  The current account balance, in USD
+  """
   balance: Float!
+
+  """
+  The estimated amount that will be charged to the credit card on file to complete the transaction, in USD
+  """
   prepayCharge: Float
+
+  """
+  The amount of Paypr needed to complete the transaction
+  """
   payprAmount: Float!
+
+  """
+  The current amount of Paypr in the account
+  """
   payprBalance: Float!
+
+  """
+  The account's current balance of this consumable
+  """
+  consumableBalance: Float!
 }
 
 type TransferConsumableToPlayerResponse implements SubmissionResponse {
@@ -852,9 +1171,24 @@ type UpdateAccountResponse {
 }
 
 type UpgradeContractEstimate implements GasEstimate {
+  """
+  The amount of gas it will take to execute the Ethereum transaction
+  """
   gasAmount: Int!
+
+  """
+  The cost of the gas to execute the Ethereum transaction
+  """
   gasCost: Float!
+
+  """
+  The current account balance, in USD
+  """
   balance: Float!
+
+  """
+  The estimated amount that will be charged to the credit card on file to complete the transaction, in USD
+  """
   prepayCharge: Float
 }
 
@@ -863,9 +1197,24 @@ type UpgradeContractResponse implements SubmissionResponse {
 }
 
 type UpgradePlayerEstimate implements GasEstimate {
+  """
+  The amount of gas it will take to execute the Ethereum transaction
+  """
   gasAmount: Int!
+
+  """
+  The cost of the gas to execute the Ethereum transaction
+  """
   gasCost: Float!
+
+  """
+  The current account balance, in USD
+  """
   balance: Float!
+
+  """
+  The estimated amount that will be charged to the credit card on file to complete the transaction, in USD
+  """
   prepayCharge: Float
 }
 

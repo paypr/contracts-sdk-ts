@@ -28,7 +28,7 @@ gql`
 
   fragment TransferConsumableFromPlayerEstimateDetails on TransferConsumableFromPlayerEstimate {
     ...GasEstimateDetails
-    playerConsumableBalance
+    consumableBalance
   }
   ${gasAndPayprEstimateDetailsFragment}
 `;

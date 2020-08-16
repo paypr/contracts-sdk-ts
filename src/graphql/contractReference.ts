@@ -8,12 +8,9 @@ export const contractReferenceFragment = gql`
   fragment ContractReference on Contract {
     id
     contractType
+    account
+    name
     address
-
-    ... on BaseContract {
-      account
-      name
-    }
 
     ... on DisableableContract {
       disabled

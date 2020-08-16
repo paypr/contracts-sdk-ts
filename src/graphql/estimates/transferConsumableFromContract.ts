@@ -12,16 +12,16 @@ export const estimateTransferConsumableFromContract = async (
   amount: number,
 ): Promise<TransferConsumableFromContractEstimateDetails> => {
   const {
-    estimates: { transferConsumableFromSkill },
+    estimates: { transferConsumableFromContract },
   } = await sdk.estimateTransferConsumableFromContract({ contractId, consumableContractId, amount });
-  return transferConsumableFromSkill;
+  return transferConsumableFromContract;
 };
 
 gql`
   query estimateTransferConsumableFromContract($contractId: ID!, $consumableContractId: ID!, $amount: Float!) {
     estimates {
-      transferConsumableFromSkill(
-        skillContractId: $contractId
+      transferConsumableFromContract(
+        contractId: $contractId
         consumableContractId: $consumableContractId
         amount: $amount
       ) {
@@ -30,9 +30,9 @@ gql`
     }
   }
 
-  fragment TransferConsumableFromContractEstimateDetails on TransferConsumableFromSkillEstimate {
+  fragment TransferConsumableFromContractEstimateDetails on TransferConsumableFromContractEstimate {
     ...GasEstimateDetails
-    skillConsumableBalance
+    consumableBalance
   }
   ${gasAndPayprEstimateDetailsFragment}
 `;

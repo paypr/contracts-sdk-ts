@@ -19,6 +19,7 @@ gql`
     estimates {
       transferConsumableToPlayer(playerId: $playerId, consumableContractId: $consumableContractId, amount: $amount) {
         ...GasAndPayprEstimateDetails
+        consumableBalance
       }
     }
   }
