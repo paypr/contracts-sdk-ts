@@ -5,6 +5,10 @@ import {
 } from '../graphql/estimates/acquireNextSkillLevelForPlayer';
 import { estimateCreatePlayer } from '../graphql/estimates/createPlayer';
 import {
+  estimateExecuteActivityForPlayer,
+  ExecuteActivityForPlayerEstimateDetails,
+} from '../graphql/estimates/executeActivityForPlayer';
+import {
   estimateTransferConsumableFromPlayer,
   TransferConsumableFromPlayerEstimateDetails,
 } from '../graphql/estimates/transferConsumableFromPlayer';
@@ -16,6 +20,10 @@ import {
   AcquireNextSkillLevelForPlayerOptions,
 } from '../graphql/mutations/acquireNextSkillLevelForPlayer';
 import { createPlayer } from '../graphql/mutations/createPlayer';
+import {
+  executeActivityForPlayer,
+  ExecuteActivityForPlayerOptions,
+} from '../graphql/mutations/executeActivityForPlayer';
 import { transferConsumableFromPlayer } from '../graphql/mutations/transferConsumableFromPlayer';
 import { transferConsumableToPlayer } from '../graphql/mutations/transferConsumableToPlayer';
 import { upgradePlayer } from '../graphql/mutations/upgradePlayer';
@@ -150,7 +158,7 @@ export interface PlayersSdk {
   ) => Promise<AcquireNextSkillLevelForPlayerEstimateDetails>;
 
   /**
-   * Transfer's the given amount of consumable from the player.
+   * Acquires the next skill level for the player.
    *
    * @param playerId the player ID
    * @param skillContractId the skill contract ID
@@ -164,6 +172,40 @@ export interface PlayersSdk {
     skillContractId: string,
     amountsToProvide: ApiConsumableAmountInput[],
     options?: AcquireNextSkillLevelForPlayerOptions,
+  ) => Promise<string>;
+
+  /**
+   * Estimate to execute an activity for the player.
+   *
+   * @param playerId the player ID
+   * @param activityContractId the activity contract ID
+   * @param options execution options
+   *
+   * @returns a promise to a submission id
+   */
+  estimateExecuteActivity: (
+    playerId: string,
+    activityContractId: string,
+    options?: ExecuteActivityForPlayerOptions,
+  ) => Promise<ExecuteActivityForPlayerEstimateDetails>;
+
+  /**
+   * Executes the activity for the player.
+   *
+   * @param playerId the player ID
+   * @param activityContractId the activity contract ID
+   * @param amountsToProvide the amounts of consumable to provide
+   * @param amountsToConsume the amounts of consumable to consume
+   * @param options execution options
+   *
+   * @returns a promise to a submission id
+   */
+  executeActivity: (
+    playerId: string,
+    activityContractId: string,
+    amountsToProvide: ApiConsumableAmountInput[],
+    amountsToConsume: ApiConsumableAmountInput[],
+    options?: ExecuteActivityForPlayerOptions,
   ) => Promise<string>;
 }
 
@@ -193,7 +235,11 @@ export const getPlayersSdk = (sdk: Sdk): PlayersSdk => ({
 
   estimateAcquireNextSkillLevel: (playerId, skillContractId, options?) =>
     estimateAcquireNextSkillLevelForPlayer(sdk, playerId, skillContractId, options),
-
   acquireNextSkillLevel: (playerId, skillContractId, amountsToProvide, options?) =>
     acquireNextSkillLevelForPlayer(sdk, playerId, skillContractId, amountsToProvide, options),
+
+  estimateExecuteActivity: (playerId, activityContractId, options?) =>
+    estimateExecuteActivityForPlayer(sdk, playerId, activityContractId, options),
+  executeActivity: (playerId, activityContractId, amountsToProvide, amountsToConsume, options?) =>
+    executeActivityForPlayer(sdk, playerId, activityContractId, amountsToProvide, amountsToConsume, options),
 });

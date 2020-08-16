@@ -1,23 +1,23 @@
 import gql from 'graphql-tag';
 import { Sdk } from '../../generated/graphql';
 
-export const transferConsumableFromContract = async (
+export const transferConsumableToContract = async (
   sdk: Sdk,
   contractId: string,
   consumableContractId: string,
   amount: number,
 ) => {
   const {
-    transferConsumableFromContract: {
+    transferConsumableToContract: {
       submission: { id: submissionId },
     },
-  } = await sdk.transferConsumableFromContract({ contractId, consumableContractId, amount });
+  } = await sdk.transferConsumableToContract({ contractId, consumableContractId, amount });
   return submissionId;
 };
 
 gql`
-  mutation transferConsumableFromContract($contractId: ID!, $consumableContractId: ID!, $amount: Float!) {
-    transferConsumableFromContract(
+  mutation transferConsumableToContract($contractId: ID!, $consumableContractId: ID!, $amount: Float!) {
+    transferConsumableToContract(
       contractId: $contractId
       consumableContractId: $consumableContractId
       amount: $amount

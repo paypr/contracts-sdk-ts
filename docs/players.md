@@ -16,6 +16,10 @@
   - [Transfer consumable from a player](#transfer-consumable-from-a-player)
   - [Estimate upgrade player](#estimate-upgrade-a-player)
   - [Upgrade a player](#upgrade-a-player)
+  - [Estimate acquire the next skill level for a player](#estimate-acquire-the-next-skill-level-for-a-player)
+  - [Acquire the next skill level for a player](#acquire-the-next-skill-level-for-a-player)
+  - [Estimate execute an activity for a player](#estimate-execute-an-activity-for-a-player)
+  - [Execute an activity level for a player](#execute-an-activity-for-a-player)
 
 ## Access
 
@@ -186,4 +190,32 @@ await sdk.submissions.waitForSubmissionDone(submissionId);
 
 console.log('Skill acquired!');
 console.log('New skill level:', await sdk.players.getSkillLevel(playerId, skillContractId));
+```
+
+### Estimate execute an activity for a player
+
+Estimates the cost and consumables to execute an activity for a player.
+
+```typescript
+const estimate = await sdk.players.estimateExecuteActivityForPlayer(playerId, activityContractId);
+
+console.log('Consumables needed:', estimate.consumableAmountsNeeded);
+console.log('Consumables provided:', estimate.consumableAmountsProvided);
+```
+
+### Execute an activity for a player
+
+Executes an activity for a player.
+
+```typescript
+const submissionId = await sdk.players.executeActivityForPlayer(
+  playerId,
+  activityContractId,
+  consumableAmountsToProvide,
+  consumableAmountsToConsume,
+);
+
+await sdk.submissions.waitForSubmissionDone(submissionId);
+
+console.log('Activity executed!');
 ```

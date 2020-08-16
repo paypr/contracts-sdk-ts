@@ -24,6 +24,7 @@ gql`
   fragment PurchasePayprEstimateDetails on PurchasePayprEstimate {
     ...GasEstimateDetails
     payprCost
+    totalCost
   }
   ${gasEstimateDetailsFragment}
 `;

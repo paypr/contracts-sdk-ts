@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 import { ApiAcquireNextSkillLevelForPlayerEstimateDetails, Sdk } from '../../generated/graphql';
-import { consumableAmountReferenceFragment } from '../consumableAmount';
+import { consumableAmountAndBalanceReferenceFragment } from '../consumableAmount';
 import { gasEstimateDetailsFragment } from '../gasEstimate';
 import { AcquireNextSkillLevelForPlayerOptions } from '../mutations/acquireNextSkillLevelForPlayer';
 
@@ -35,10 +35,10 @@ gql`
   fragment AcquireNextSkillLevelForPlayerEstimateDetails on AcquireNextSkillLevelForPlayerEstimate {
     ...GasEstimateDetails
     consumableAmountsNeeded {
-      ...ConsumableAmountReference
+      ...ConsumableAmountAndBalanceReference
     }
   }
 
   ${gasEstimateDetailsFragment}
-  ${consumableAmountReferenceFragment}
+  ${consumableAmountAndBalanceReferenceFragment}
 `;
