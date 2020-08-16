@@ -149,7 +149,7 @@ Estimates the cost to transfer a given amount of consumable from a player.
 const estimate = await sdk.players.estimateTransferConsumableFromPlayer(playerId, consumableContractId, amount);
 
 console.log('Gas cost:', estimate.gasCost);
-console.log('Player consumable balance:', estimate.playerConsumableBalance);
+console.log('Player consumable balance:', estimate.consumableBalance);
 ```
 
 ### Transfer consumable from a player
