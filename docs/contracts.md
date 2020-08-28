@@ -6,6 +6,7 @@
 - [Information](#information)
   - [Load contract details](#load-contract-details)
   - [Get consumable balance](#get-consumable-balance)
+  - [Get consumable amounts needed to mint an item](#get-consumable-amounts-needed-to-mint-an-item)
 - [Actions](#actions)
   - [Transfer consumable to a contract](#transfer-consumable-to-a-contract)
   - [Transfer consumable from a contract](#transfer-consumable-from-a-contract)
@@ -45,6 +46,22 @@ Gets the consumable balance for a given contract.
 const contractConsumableBalance: number = await sdk.contracts.getConsumableBalance(contractId, consumableContractId);
 
 console.log('Current balance:', contractConsumableBalance);
+```
+
+### Get consumable amounts needed to mint an item
+
+Gets the consumable amounts needed to mint an item, along with the available balance for each consumable in the artifact.
+
+```typescript
+const consumableBalancesNeeded: readonly ConsumableAmountAndBalanceReference[] = await sdk.contracts.getConsumableAmountsNeededToMintItem(
+  artifactContractId,
+);
+
+consumableBalancesNeeded.forEach(({ consumable, amount, balance }) => {
+  console.log('Required consumable:', consumable.name);
+  console.log('Required amount:', amount);
+  console.log('Available balance:', balance);
+});
 ```
 
 ## Actions
