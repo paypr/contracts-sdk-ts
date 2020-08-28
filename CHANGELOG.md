@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.3.1](https://github.com/paypr/contracts-sdk-ts/compare/v0.3.0...v0.3.1) (2020-08-28)
+
+### Features
+
+- [[#14](https://github.com/paypr/contracts-sdk-ts/issues/14)] add artifact actions and info ([df8bbf4](https://github.com/paypr/contracts-sdk-ts/commit/df8bbf4ccc8ccc496c2b86643635032dfdfb6c6c))
+
 ## [0.3.0](https://github.com/paypr/contracts-sdk-ts/compare/v0.2.2...v0.3.0) (2020-08-16)
 
 ### ⚠ BREAKING CHANGES
