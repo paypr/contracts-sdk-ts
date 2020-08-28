@@ -1,6 +1,7 @@
 import gql from 'graphql-tag';
 import { ApiPlayerDetails, ApiPlayerReference, Sdk } from '../generated/graphql';
 import { ArgumentError } from '../utils/errors';
+import { itemDetailsFragment } from './items';
 
 /** Reference to the player */
 export type PlayerReference = ApiPlayerReference;
@@ -21,6 +22,7 @@ export const playerDetailsFragment = gql`
     ...PlayerReference
     version
     needsUpgrade
+    payprBalance
     createdAt
     updatedAt
   }
@@ -76,4 +78,30 @@ gql`
       consumableBalance(consumableContractId: $consumableContractId)
     }
   }
+`;
+
+export const getPlayerItems = async (sdk: Sdk, playerId: string, artifactContractId: string) => {
+  const { contract } = await sdk.getPlayerItems({ playerId, artifactContractId });
+  if (!contract) {
+    throw new ArgumentError(`Artifact not found: ${artifactContractId}`);
+  }
+
+  if (!('playerItems' in contract)) {
+    throw new ArgumentError(`Contract does not appear to be an artifact: ${artifactContractId}`);
+  }
+
+  return contract.playerItems;
+};
+
+gql`
+  query getPlayerItems($playerId: ID!, $artifactContractId: ID!) {
+    contract(id: $artifactContractId) {
+      ... on ArtifactContract {
+        playerItems(playerId: $playerId) {
+          ...ItemDetails
+        }
+      }
+    }
+  }
+  ${itemDetailsFragment}
 `;

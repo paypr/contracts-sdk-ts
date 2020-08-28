@@ -30,9 +30,8 @@ gql`
     }
   }
 
-  fragment TransferConsumableFromContractEstimateDetails on TransferConsumableFromContractEstimate {
+  fragment TransferConsumableFromContractEstimateDetails on GasEstimate {
     ...GasEstimateDetails
-    consumableBalance
   }
   ${gasAndPayprEstimateDetailsFragment}
 `;

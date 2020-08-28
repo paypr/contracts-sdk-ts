@@ -8,13 +8,25 @@ import {
   estimateExecuteActivityForPlayer,
   ExecuteActivityForPlayerEstimateDetails,
 } from '../graphql/estimates/executeActivityForPlayer';
+import { estimateMintItemForPlayer, MintItemForPlayerEstimateDetails } from '../graphql/estimates/mintItemForPlayer';
 import {
   estimateTransferConsumableFromPlayer,
   TransferConsumableFromPlayerEstimateDetails,
 } from '../graphql/estimates/transferConsumableFromPlayer';
 import { estimateTransferConsumableToPlayer } from '../graphql/estimates/transferConsumableToPlayer';
+import {
+  estimateTransferItemFromPlayer,
+  TransferItemFromPlayerEstimateDetails,
+} from '../graphql/estimates/transferItemFromPlayer';
+import { estimateTransferItemToPlayer } from '../graphql/estimates/transferItemToPlayer';
+import {
+  estimateTransferPayprFromPlayer,
+  TransferPayprFromPlayerEstimateDetails,
+} from '../graphql/estimates/transferPayprFromPlayer';
+import { estimateTransferPayprToPlayer } from '../graphql/estimates/transferPayprToPlayer';
 import { estimateUpgradePlayer } from '../graphql/estimates/upgradePlayer';
 import { GasAndPayprEstimateDetails, GasEstimateDetails } from '../graphql/gasEstimate';
+import { ItemDetails } from '../graphql/items';
 import {
   acquireNextSkillLevelForPlayer,
   AcquireNextSkillLevelForPlayerOptions,
@@ -24,10 +36,21 @@ import {
   executeActivityForPlayer,
   ExecuteActivityForPlayerOptions,
 } from '../graphql/mutations/executeActivityForPlayer';
+import { mintItemForPlayer } from '../graphql/mutations/mintItemForPlayer';
 import { transferConsumableFromPlayer } from '../graphql/mutations/transferConsumableFromPlayer';
 import { transferConsumableToPlayer } from '../graphql/mutations/transferConsumableToPlayer';
+import { transferItemFromPlayer } from '../graphql/mutations/transferItemFromPlayer';
+import { transferItemToPlayer } from '../graphql/mutations/transferItemToPlayer';
+import { transferPayprFromPlayer } from '../graphql/mutations/transferPayprFromPlayer';
+import { transferPayprToPlayer } from '../graphql/mutations/transferPayprToPlayer';
 import { upgradePlayer } from '../graphql/mutations/upgradePlayer';
-import { getPlayerConsumableBalance, getPlayerSkillLevel, loadPlayer, PlayerDetails } from '../graphql/players';
+import {
+  getPlayerConsumableBalance,
+  getPlayerItems,
+  getPlayerSkillLevel,
+  loadPlayer,
+  PlayerDetails,
+} from '../graphql/players';
 
 export interface PlayersSdk {
   /**
@@ -71,6 +94,14 @@ export interface PlayersSdk {
   loadPlayer: (playerId: string) => Promise<PlayerDetails>;
 
   /**
+   * Retrieves the items owned by the player for the given artifact.
+   * @param artifactContractId the artifact contract ID
+   *
+   * @returns a promise to a list of items
+   */
+  getOwnedItems: (playerId: string, artifactContractId: string) => Promise<readonly ItemDetails[]>;
+
+  /**
    * Gets the player's skill level
    *
    * @param playerId the player ID
@@ -106,7 +137,7 @@ export interface PlayersSdk {
   ) => Promise<GasAndPayprEstimateDetails>;
 
   /**
-   * Transfer's the given amount of consumable to the player
+   * Transfers the given amount of consumable to the player
    *
    * @param playerId the player ID
    * @param consumableContractId the consumable contract ID
@@ -123,7 +154,7 @@ export interface PlayersSdk {
    * @param consumableContractId the consumable contract ID
    * @param amount the amount of consumable to transfer
    *
-   * @returns a promise to a submission id
+   * @returns a promise to the estimate
    */
   estimateTransferConsumableFromPlayer: (
     playerId: string,
@@ -132,7 +163,7 @@ export interface PlayersSdk {
   ) => Promise<TransferConsumableFromPlayerEstimateDetails>;
 
   /**
-   * Transfer's the given amount of consumable from the player.
+   * Transfers the given amount of consumable from the player.
    *
    * @param playerId the player ID
    * @param consumableContractId the consumable contract ID
@@ -143,13 +174,108 @@ export interface PlayersSdk {
   transferConsumableFromPlayer: (playerId: string, consumableContractId: string, amount: number) => Promise<string>;
 
   /**
+   * Estimate how much it would cost to transfer the given item to the player
+   *
+   * @param playerId the player ID
+   * @param artifactContractId the item contract ID
+   * @param itemId the ID of the item to transfer
+   *
+   * @returns a promise to the estimate details
+   */
+  estimateTransferItemToPlayer: (
+    playerId: string,
+    artifactContractId: string,
+    itemId: string,
+  ) => Promise<GasEstimateDetails>;
+
+  /**
+   * Transfers the given item to the player
+   *
+   * @param playerId the player ID
+   * @param artifactContractId the item contract ID
+   * @param itemId the ID of the item to transfer
+   *
+   * @returns a promise to a submission id
+   */
+  transferItemToPlayer: (playerId: string, artifactContractId: string, itemId: string) => Promise<string>;
+
+  /**
+   * Estimate to transfer the given item from the player.
+   *
+   * @param playerId the player ID
+   * @param artifactContractId the item contract ID
+   * @param itemId the ID of the item to transfer
+   *
+   * @returns a promise to the estimate
+   */
+  estimateTransferItemFromPlayer: (
+    playerId: string,
+    artifactContractId: string,
+    itemId: string,
+  ) => Promise<TransferItemFromPlayerEstimateDetails>;
+
+  /**
+   * Transfers the given item from the player.
+   *
+   * @param playerId the player ID
+   * @param artifactContractId the item contract ID
+   * @param itemId the ID of the item to transfer
+   *
+   * @returns a promise to a submission id
+   */
+  transferItemFromPlayer: (playerId: string, artifactContractId: string, itemId: string) => Promise<string>;
+
+  /**
+   * Estimate how much it would cost to transfer the given amount of Paypr to the player
+   *
+   * @param playerId the player ID
+   * @param amount the amount of Paypr to transfer
+   *
+   * @returns a promise to the estimate details
+   */
+  estimateTransferPayprToPlayer: (playerId: string, amount: number) => Promise<GasEstimateDetails>;
+
+  /**
+   * Transfers the given amount of Paypr to the player
+   *
+   * @param playerId the player ID
+   * @param amount the amount of Paypr to transfer
+   *
+   * @returns a promise to a submission id
+   */
+  transferPayprToPlayer: (playerId: string, amount: number) => Promise<string>;
+
+  /**
+   * Estimate to transfer the given amount of Paypr from the player.
+   *
+   * @param playerId the player ID
+   * @param amount the amount of Paypr to transfer
+   *
+   * @returns a promise to the estimate
+   */
+  estimateTransferPayprFromPlayer: (
+    playerId: string,
+    amount: number,
+  ) => Promise<TransferPayprFromPlayerEstimateDetails>;
+
+  /**
+   * Transfers the given amount of Paypr from the player.
+   *
+   * @param playerId the player ID
+   * @param amount the amount of Paypr to transfer
+   *
+   * @returns a promise to a submission id
+   */
+  transferPayprFromPlayer: (playerId: string, amount: number) => Promise<string>;
+
+  /**
    * Estimate to acquire the next skill level for the player.
    *
    * @param playerId the player ID
    * @param skillContractId the skill contract ID
    * @param options execution options
    *
-   * @returns a promise to a submission id
+   * @returns a promise to the estimate
    */
   estimateAcquireNextSkillLevel: (
     playerId: string,
@@ -181,7 +307,7 @@ export interface PlayersSdk {
    * @param activityContractId the activity contract ID
    * @param options execution options
    *
-   * @returns a promise to a submission id
+   * @returns a promise to the estimate
    */
   estimateExecuteActivity: (
     playerId: string,
@@ -207,6 +333,26 @@ export interface PlayersSdk {
     amountsToConsume: ApiConsumableAmountInput[],
     options?: ExecuteActivityForPlayerOptions,
   ) => Promise<string>;
+
+  /**
+   * Estimate to mint an item for the player.
+   *
+   * @param playerId the player ID
+   * @param artifactContractId the artifact contract ID
+   *
+   * @returns a promise to the estimate
+   */
+  estimateMintItem: (playerId: string, artifactContractId: string) => Promise<MintItemForPlayerEstimateDetails>;
+
+  /**
+   * Mints an item for the player.
+   *
+   * @param playerId the player ID
+   * @param artifactContractId the artifact contract ID
+   *
+   * @returns a promise to a submission id
+   */
+  mintItem: (playerId: string, artifactContractId: string) => Promise<string>;
 }
 
 export const getPlayersSdk = (sdk: Sdk): PlayersSdk => ({
@@ -217,6 +363,7 @@ export const getPlayersSdk = (sdk: Sdk): PlayersSdk => ({
   upgradePlayer: (playerId: string) => upgradePlayer(sdk, playerId),
 
   loadPlayer: (playerId) => loadPlayer(sdk, playerId),
+  getOwnedItems: (playerId, artifactContractId) => getPlayerItems(sdk, playerId, artifactContractId),
 
   getSkillLevel: (playerId, skillContractId) => getPlayerSkillLevel(sdk, playerId, skillContractId),
 
@@ -233,6 +380,22 @@ export const getPlayersSdk = (sdk: Sdk): PlayersSdk => ({
   transferConsumableFromPlayer: (playerId, consumableContractId, amount) =>
     transferConsumableFromPlayer(sdk, playerId, consumableContractId, amount),
 
+  estimateTransferItemToPlayer: (playerId, artifactContractId, itemId) =>
+    estimateTransferItemToPlayer(sdk, playerId, artifactContractId, itemId),
+  transferItemToPlayer: (playerId, artifactContractId, itemId) =>
+    transferItemToPlayer(sdk, playerId, artifactContractId, itemId),
+
+  estimateTransferItemFromPlayer: (playerId, artifactContractId, itemId) =>
+    estimateTransferItemFromPlayer(sdk, playerId, artifactContractId, itemId),
+  transferItemFromPlayer: (playerId, artifactContractId, itemId) =>
+    transferItemFromPlayer(sdk, playerId, artifactContractId, itemId),
+
+  estimateTransferPayprToPlayer: (playerId, amount) => estimateTransferPayprToPlayer(sdk, playerId, amount),
+  transferPayprToPlayer: (playerId, amount) => transferPayprToPlayer(sdk, playerId, amount),
+
+  estimateTransferPayprFromPlayer: (playerId, amount) => estimateTransferPayprFromPlayer(sdk, playerId, amount),
+  transferPayprFromPlayer: (playerId, amount) => transferPayprFromPlayer(sdk, playerId, amount),
+
   estimateAcquireNextSkillLevel: (playerId, skillContractId, options?) =>
     estimateAcquireNextSkillLevelForPlayer(sdk, playerId, skillContractId, options),
   acquireNextSkillLevel: (playerId, skillContractId, amountsToProvide, options?) =>
@@ -242,4 +405,7 @@ export const getPlayersSdk = (sdk: Sdk): PlayersSdk => ({
     estimateExecuteActivityForPlayer(sdk, playerId, activityContractId, options),
   executeActivity: (playerId, activityContractId, amountsToProvide, amountsToConsume, options?) =>
     executeActivityForPlayer(sdk, playerId, activityContractId, amountsToProvide, amountsToConsume, options),
+
+  estimateMintItem: (playerId, artifactContractId) => estimateMintItemForPlayer(sdk, playerId, artifactContractId),
+  mintItem: (playerId, artifactContractId) => mintItemForPlayer(sdk, playerId, artifactContractId),
 });

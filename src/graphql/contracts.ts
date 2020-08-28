@@ -14,6 +14,7 @@ export const contractDetailsFragment = gql`
 
     description
     discoverable
+    payprBalance
     createdAt
     updatedAt
 
@@ -38,6 +39,8 @@ export const contractDetailsFragment = gql`
     ... on ArtifactContract {
       symbol
       initialUses
+      totalItems
+      totalUsesLeft
     }
 
     ... on ConsumableContract {

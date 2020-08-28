@@ -23,7 +23,6 @@ gql`
         amount: $amount
       ) {
         ...GasAndPayprEstimateDetails
-        consumableBalance
       }
     }
   }
