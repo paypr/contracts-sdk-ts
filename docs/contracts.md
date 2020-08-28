@@ -6,11 +6,11 @@
 - [Information](#information)
   - [Load contract details](#load-contract-details)
   - [Get consumable balance](#get-consumable-balance)
-  - [Estimate transfer consumable to a contract](#estimate-transfer-consumable-to-a-contract)
-  - [Transfer consumable to a contract](#transfer-consumable-to-a-contract)
-  - [Estimate transfer consumable from a contract](#estimate-transfer-consumable-from-a-contract)
-  - [Transfer consumable from a contract](#transfer-consumable-from-a-contract)
 - [Actions](#actions)
+  - [Transfer consumable to a contract](#transfer-consumable-to-a-contract)
+  - [Transfer consumable from a contract](#transfer-consumable-from-a-contract)
+  - [Transfer Paypr to a contract](#transfer-paypr-to-a-contract)
+  - [Transfer Paypr from a contract](#transfer-paypr-from-a-contract)
 
 ## Access
 
@@ -49,10 +49,13 @@ console.log('Current balance:', contractConsumableBalance);
 
 ## Actions
 
-### Estimate transfer consumable to a contract
+### Transfer consumable to a contract
 
-Estimates the cost in dollars and Paypr to transfer a given amount of consumable
-to a contract.
+Transfers a specific amount of consumable from your account to a contract.
+
+#### Estimate
+
+Estimate the cost in dollars and Paypr to transfer the consumable:
 
 ```typescript
 const estimate = await sdk.contracts.estimateTransferConsumableToContract(contractId, consumableContractId, amount);
@@ -61,9 +64,9 @@ console.log('Gas cost:', estimate.gasCost);
 console.log('Paypr amount:', estimate.payprAmount);
 ```
 
-### Transfer consumable to a contract
+#### Execute
 
-Transfers a specific amount of consumable from your account to a contract.
+Transfer the consumable:
 
 ```typescript
 const submissionId = await sdk.contracts.transferConsumableToContract(contractId, consumableContractId, amount);
@@ -74,20 +77,23 @@ console.log('Transfer to contract is complete!');
 console.log('New balance:', await sdk.contracts.getConsumableBalance(contractId, consumableContractId));
 ```
 
-### Estimate transfer consumable from a contract
+### Transfer consumable from a contract
 
-Estimates the cost to transfer a given amount of consumable from a contract.
+Transfers a specific amount of consumable from a contract to your account.
+
+#### Estimate
+
+Estimate the cost to transfer the given amount of consumable:
 
 ```typescript
 const estimate = await sdk.contracts.estimateTransferConsumableFromContract(contractId, consumableContractId, amount);
 
 console.log('Gas cost:', estimate.gasCost);
-console.log('Contract consumable balance:', estimate.contractConsumableBalance);
 ```
 
-### Transfer consumable from a contract
+#### Execute
 
-Transfers a specific amount of consumable from a contract to your account.
+Transfer the consumable:
 
 ```typescript
 const submissionId = await sdk.contracts.transferConsumableFromContract(contractId, consumableContractId, amount);
@@ -96,4 +102,62 @@ await sdk.submissions.waitForSubmissionDone(submissionId);
 
 console.log('Transfer from contract is complete!');
 console.log('New balance:', await sdk.contracts.getConsumableBalance(contractId, consumableContractId));
+```
+
+### Transfer Paypr to a contract
+
+Transfers a specific amount of Paypr from your account to a contract.
+
+#### Estimate
+
+Estimate the cost to transfer the Paypr:
+
+```typescript
+const estimate = await sdk.contracts.estimateTransferPayprToContract(contractId, amount);
+
+console.log('Gas cost:', estimate.gasCost);
+```
+
+#### Execute
+
+Transfer the Paypr:
+
+```typescript
+const submissionId = await sdk.contracts.transferPayprToContract(contractId, amount);
+
+await sdk.submissions.waitForSubmissionDone(submissionId);
+
+console.log('Transfer to contract is complete!');
+
+const contract = await sdk.contracts.loadContract(contractId);
+console.log('New balance:', await contract.payprBalance);
+```
+
+### Transfer Paypr from a contract
+
+Transfers a specific amount of Paypr from a contract to your account.
+
+#### Estimate
+
+Estimate the cost to transfer the given amount of Paypr:
+
+```typescript
+const estimate = await sdk.contracts.estimateTransferPayprFromContract(contractId, amount);
+
+console.log('Gas cost:', estimate.gasCost);
+```
+
+#### Execute
+
+Transfer the Paypr:
+
+```typescript
+const submissionId = await sdk.contracts.transferPayprFromContract(contractId, amount);
+
+await sdk.submissions.waitForSubmissionDone(submissionId);
+
+console.log('Transfer from contract is complete!');
+
+const contract = await sdk.contracts.loadContract(contractId);
+console.log('New balance:', await contract.payprBalance);
 ```

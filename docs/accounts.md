@@ -5,8 +5,8 @@
 - [Access](#access)
 - [Information](#information)
   - [Load account details](#load-account-details)
+  - [Get owned items](#get-owned-items)
 - [Actions](#actions)
-  - [Estimate Paypr purchase cost](#estimate-paypr-purchase-cost)
   - [Purchase Paypr](#purchase-paypr)
 
 ## Access
@@ -34,11 +34,27 @@ const account: AccountDetails = await sdk.accounts.loadAccount();
 console.log(account.name);
 ```
 
+### Get owned items
+
+Retrieves the items owned by the account.
+
+```typescript
+const items: readonly ItemDetails[] = await sdk.accounts.getOwnedItems();
+
+items.forEach((item) => {
+  console.log(`${item.itemId} has ${item.usesLeft} uses left`);
+});
+```
+
 ## Actions
 
-### Estimate Paypr purchase cost
+### Purchase Paypr
 
-Estimates the cost to purchase a given amount of Paypr.
+Purchases Paypr and deposits it into the account.
+
+#### Estimate
+
+Estimate the cost to purchase a given amount of Paypr:
 
 ```typescript
 const estimate: PurchasePayprGasEstimateDetail = await sdk.accounts.estimatePurchasePaypr(amount);
@@ -46,9 +62,9 @@ const estimate: PurchasePayprGasEstimateDetail = await sdk.accounts.estimatePurc
 console.log('Paypr cost:', estimate.payprCost);
 ```
 
-### Purchase Paypr
+#### Execute
 
-Purchases Paypr.
+Purchase the Paypr:
 
 ```typescript
 const submissionId: string = await sdk.accounts.purchasePaypr(amount);

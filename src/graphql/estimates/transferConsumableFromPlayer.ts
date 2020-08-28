@@ -26,9 +26,8 @@ gql`
     }
   }
 
-  fragment TransferConsumableFromPlayerEstimateDetails on TransferConsumableFromPlayerEstimate {
+  fragment TransferConsumableFromPlayerEstimateDetails on GasEstimate {
     ...GasEstimateDetails
-    consumableBalance
   }
   ${gasAndPayprEstimateDetailsFragment}
 `;

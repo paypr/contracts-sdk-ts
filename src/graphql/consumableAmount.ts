@@ -1,5 +1,12 @@
 import gql from 'graphql-tag';
+import { ApiConsumableAmountAndBalanceReference, ApiConsumableAmountReference } from '../generated/graphql';
 import { contractReferenceFragment } from './contractReference';
+
+/** Represents a consumable and an associated amount */
+export type ConsumableAmountReference = ApiConsumableAmountReference;
+
+/** Represents a Consumable amount along with the balance for the object */
+export type ConsumableAmountAndBalanceReference = ApiConsumableAmountAndBalanceReference;
 
 export const consumableAmountReferenceFragment = gql`
   fragment ConsumableAmountReference on ConsumableAmount {
