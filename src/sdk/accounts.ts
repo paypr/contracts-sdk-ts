@@ -1,5 +1,11 @@
 import { Sdk } from '../generated/graphql';
-import { AccountDetails, getAccountItems, loadAccount } from '../graphql/accounts';
+import {
+  AccountDetails,
+  getAccountConsumableBalance,
+  getAccountItems,
+  getAccountPayprBalance,
+  loadAccount,
+} from '../graphql/accounts';
 import { estimatePurchasePaypr, PurchasePayprEstimateDetails } from '../graphql/estimates/purchasePaypr';
 import { ItemDetails } from '../graphql/items';
 import { purchasePaypr } from '../graphql/mutations/purchasePaypr';
@@ -11,6 +17,22 @@ export interface AccountsSdk {
    * @returns a promise to the account details
    */
   loadAccount: () => Promise<AccountDetails>;
+
+  /**
+   * Gets the account's consumable balance
+   *
+   * @param consumableContractId the consumable contract ID
+   *
+   * @returns a promise to the balance
+   */
+  getConsumableBalance: (consumableContractId: string) => Promise<number>;
+
+  /**
+   * Gets the account's Paypr balance
+   *
+   * @returns a promise to the balance
+   */
+  getPayprBalance: () => Promise<number>;
 
   /**
    * Retrieves the items owned by the account for the given artifact.
@@ -40,6 +62,8 @@ export interface AccountsSdk {
 
 export const getAccountsSdk = (sdk: Sdk): AccountsSdk => ({
   loadAccount: () => loadAccount(sdk),
+  getConsumableBalance: (consumableContractId) => getAccountConsumableBalance(sdk, consumableContractId),
+  getPayprBalance: () => getAccountPayprBalance(sdk),
   getOwnedItems: (artifactContractId) => getAccountItems(sdk, artifactContractId),
   estimatePurchasePaypr: (amount) => estimatePurchasePaypr(sdk, amount),
   purchasePaypr: (amount) => purchasePaypr(sdk, amount),

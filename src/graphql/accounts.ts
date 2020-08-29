@@ -32,6 +32,34 @@ gql`
   ${accountDetailsFragment}
 `;
 
+export const getAccountConsumableBalance = async (sdk: Sdk, consumableContractId: string) => {
+  const { account } = await sdk.getAccountConsumableBalance({ consumableContractId });
+  const { consumableBalance } = account;
+  return consumableBalance;
+};
+
+gql`
+  query getAccountConsumableBalance($consumableContractId: ID!) {
+    account {
+      consumableBalance(consumableContractId: $consumableContractId)
+    }
+  }
+`;
+
+export const getAccountPayprBalance = async (sdk: Sdk) => {
+  const { account } = await sdk.getAccountPayprBalance();
+  const { payprBalance } = account;
+  return payprBalance;
+};
+
+gql`
+  query getAccountPayprBalance {
+    account {
+      payprBalance
+    }
+  }
+`;
+
 export const getAccountItems = async (sdk: Sdk, artifactContractId: string) => {
   const { contract } = await sdk.getAccountItems({ artifactContractId });
   if (!contract) {

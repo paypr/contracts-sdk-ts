@@ -1,7 +1,12 @@
 import { Sdk } from '../generated/graphql';
 import { getConsumableAmountsNeededToMintItem } from '../graphql/artifacts';
 import { ConsumableAmountAndBalanceReference } from '../graphql/consumableAmount';
-import { ContractDetails, getContractConsumableBalance, loadContract } from '../graphql/contracts';
+import {
+  ContractDetails,
+  getContractConsumableBalance,
+  getContractPayprBalance,
+  loadContract,
+} from '../graphql/contracts';
 import {
   estimateTransferConsumableFromContract,
   TransferConsumableFromContractEstimateDetails,
@@ -46,6 +51,15 @@ export interface ContractSdk {
    * @returns a promise to the balance
    */
   getConsumableBalance: (contractId: string, consumableContractId: string) => Promise<number>;
+
+  /**
+   * Gets the contract's Paypr balance
+   *
+   * @param contractId the contract ID
+   *
+   * @returns a promise to the balance
+   */
+  getPayprBalance: (contractId: string) => Promise<number>;
 
   /**
    * Estimate how much it would cost to transfer the given amount of consumable to the contract
@@ -151,6 +165,8 @@ export const getContractsSdk = (sdk: Sdk): ContractSdk => ({
 
   getConsumableBalance: (contractId, consumableContractId) =>
     getContractConsumableBalance(sdk, contractId, consumableContractId),
+
+  getPayprBalance: (contractId) => getContractPayprBalance(sdk, contractId),
 
   estimateTransferConsumableToContract: (contractId, consumableContractId, amount) =>
     estimateTransferConsumableToContract(sdk, contractId, consumableContractId, amount),
