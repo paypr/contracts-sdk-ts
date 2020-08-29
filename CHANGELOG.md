@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.3.2](https://github.com/paypr/contracts-sdk-ts/compare/v0.3.1...v0.3.2) (2020-08-29)
+
+### Features
+
+- [[#14](https://github.com/paypr/contracts-sdk-ts/issues/14)] add getPayprBalance for contract, player and account ([a8209ef](https://github.com/paypr/contracts-sdk-ts/commit/a8209ef38bf1aa23f862e714f5302eae90390dc7))
+
 ### [0.3.1](https://github.com/paypr/contracts-sdk-ts/compare/v0.3.0...v0.3.1) (2020-08-28)
 
 ### Features
