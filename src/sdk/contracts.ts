@@ -1,5 +1,5 @@
 import { Sdk } from '../generated/graphql';
-import { getConsumableAmountsNeededToMintItem } from '../graphql/artifacts';
+import { getConsumableAmountsNeededToMintItem, getItemDetails } from '../graphql/artifacts';
 import { ConsumableAmountAndBalanceReference } from '../graphql/consumableAmount';
 import {
   ContractDetails,
@@ -18,6 +18,7 @@ import {
 } from '../graphql/estimates/transferPayprFromContract';
 import { estimateTransferPayprToContract } from '../graphql/estimates/transferPayprToContract';
 import { GasAndPayprEstimateDetails, GasEstimateDetails } from '../graphql/gasEstimate';
+import { ItemDetails } from '../graphql/items';
 import { transferConsumableFromContract } from '../graphql/mutations/transferConsumableFromContract';
 import { transferConsumableToContract } from '../graphql/mutations/transferConsumableToContract';
 import { transferPayprFromContract } from '../graphql/mutations/transferPayprFromContract';
@@ -31,6 +32,15 @@ export interface ContractSdk {
    * @returns a promise to the contract details
    */
   loadContract: (contractId: string) => Promise<ContractDetails>;
+
+  /**
+   * Gets the item details for the given item ID
+   * @param artifactContractId the artifact contract ID
+   * @param itemId the item ID
+   *
+   * @returns a promise to the item details, if found
+   */
+  getItemDetails: (artifactContractId: string, itemId: string) => Promise<ItemDetails | null>;
 
   /**
    * Gets the consumable amounts, and available balances, needed to mint an item of the given artifact
@@ -159,6 +169,8 @@ export interface ContractSdk {
 
 export const getContractsSdk = (sdk: Sdk): ContractSdk => ({
   loadContract: (contractId) => loadContract(sdk, contractId),
+
+  getItemDetails: (artifactContractId: string, itemId: string) => getItemDetails(sdk, artifactContractId, itemId),
 
   getConsumableAmountsNeededToMintItem: (artifactContractId) =>
     getConsumableAmountsNeededToMintItem(sdk, artifactContractId),
