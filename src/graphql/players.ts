@@ -80,6 +80,23 @@ gql`
   }
 `;
 
+export const getPlayerPayprBalance = async (sdk: Sdk, playerId: string) => {
+  const { player } = await sdk.getPlayerPayprBalance({ playerId });
+  if (!player) {
+    throw new ArgumentError(`Player not found: ${playerId}`);
+  }
+  const { payprBalance } = player;
+  return payprBalance;
+};
+
+gql`
+  query getPlayerPayprBalance($playerId: ID!) {
+    player(id: $playerId) {
+      payprBalance
+    }
+  }
+`;
+
 export const getPlayerItems = async (sdk: Sdk, playerId: string, artifactContractId: string) => {
   const { contract } = await sdk.getPlayerItems({ playerId, artifactContractId });
   if (!contract) {

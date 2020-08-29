@@ -5,6 +5,8 @@
 - [Access](#access)
 - [Information](#information)
   - [Load account details](#load-account-details)
+  - [Get consumable balance](#get-consumable-balance)
+  - [Get Paypr balance](#get-paypr-balance)
   - [Get owned items](#get-owned-items)
 - [Actions](#actions)
   - [Purchase Paypr](#purchase-paypr)
@@ -32,6 +34,26 @@ Loads the account details.
 const account: AccountDetails = await sdk.accounts.loadAccount();
 
 console.log(account.name);
+```
+
+### Get consumable balance
+
+Gets the consumable balance for a given account.
+
+```typescript
+const accountConsumableBalance: number = await sdk.accounts.getConsumableBalance(consumableContractId);
+
+console.log('Current balance:', accountConsumableBalance);
+```
+
+### Get Paypr balance
+
+Gets the Paypr balance for a given account.
+
+```typescript
+const accountPayprBalance: number = await sdk.accounts.getPayprBalance();
+
+console.log('Current balance:', accountPayprBalance);
 ```
 
 ### Get owned items

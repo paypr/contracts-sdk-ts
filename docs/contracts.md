@@ -7,6 +7,7 @@
   - [Load contract details](#load-contract-details)
   - [Get consumable balance](#get-consumable-balance)
   - [Get consumable amounts needed to mint an item](#get-consumable-amounts-needed-to-mint-an-item)
+  - [Get Paypr balance](#get-paypr-balance)
 - [Actions](#actions)
   - [Transfer consumable to a contract](#transfer-consumable-to-a-contract)
   - [Transfer consumable from a contract](#transfer-consumable-from-a-contract)
@@ -46,6 +47,16 @@ Gets the consumable balance for a given contract.
 const contractConsumableBalance: number = await sdk.contracts.getConsumableBalance(contractId, consumableContractId);
 
 console.log('Current balance:', contractConsumableBalance);
+```
+
+### Get Paypr balance
+
+Gets the Paypr balance for a given contract.
+
+```typescript
+const contractPayprBalance: number = await sdk.contracts.getPayprBalance(contractId);
+
+console.log('Current balance:', contractPayprBalance);
 ```
 
 ### Get consumable amounts needed to mint an item
@@ -146,8 +157,8 @@ await sdk.submissions.waitForSubmissionDone(submissionId);
 
 console.log('Transfer to contract is complete!');
 
-const contract = await sdk.contracts.loadContract(contractId);
-console.log('New balance:', await contract.payprBalance);
+const contractPayprBalance = await sdk.contracts.getPayprBalance(contractId);
+console.log('New balance:', contractPayprBalance);
 ```
 
 ### Transfer Paypr from a contract
@@ -175,6 +186,6 @@ await sdk.submissions.waitForSubmissionDone(submissionId);
 
 console.log('Transfer from contract is complete!');
 
-const contract = await sdk.contracts.loadContract(contractId);
-console.log('New balance:', await contract.payprBalance);
+const contractPayprBalance = await sdk.contracts.getPayprBalance(contractId);
+console.log('New balance:', contractPayprBalance);
 ```

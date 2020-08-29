@@ -96,3 +96,20 @@ gql`
     }
   }
 `;
+
+export const getContractPayprBalance = async (sdk: Sdk, contractId: string) => {
+  const { contract } = await sdk.getContractPayprBalance({ contractId });
+  if (!contract) {
+    throw new ArgumentError(`Contract not found: ${contractId}`);
+  }
+  const { payprBalance } = contract;
+  return payprBalance;
+};
+
+gql`
+  query getContractPayprBalance($contractId: ID!) {
+    contract(id: $contractId) {
+      payprBalance
+    }
+  }
+`;

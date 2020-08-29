@@ -5,9 +5,10 @@
 - [Access](#access)
 - [Information](#information)
   - [Load player details](#load-player-details)
+  - [Get consumable balance](#get-consumable-balance)
+  - [Get Paypr balance](#get-paypr-balance)
   - [Get owned items](#get-owned-items)
   - [Get skill level](#get-skill-level)
-  - [Get consumable balance](#get-consumable-balance)
 - [Actions](#actions)
   - [Create a player](#create-a-player)
   - [Transfer consumable to a player](#transfer-consumable-to-a-player)
@@ -46,6 +47,26 @@ const player: PlayerDetails = await sdk.players.loadPlayer(playerId);
 console.log(player.name);
 ```
 
+### Get consumable balance
+
+Gets the consumable balance for a given player.
+
+```typescript
+const playerConsumableBalance: number = await sdk.players.getConsumableBalance(playerId, consumableContractId);
+
+console.log('Current balance:', playerConsumableBalance);
+```
+
+### Get Paypr balance
+
+Gets the Paypr balance for a given player.
+
+```typescript
+const playerPayprBalance: number = await sdk.players.getPayprBalance(playerId);
+
+console.log('Current balance:', playerPayprBalance);
+```
+
 ### Get owned items
 
 Retrieves the items owned by the given player.
@@ -66,16 +87,6 @@ Gets the skill level for a given player.
 const playerSkillLevel: number = await sdk.players.getSkillLevel(playerId, skillContractId);
 
 console.log('Current level:', playerSkillLevel);
-```
-
-### Get consumable balance
-
-Gets the consumable balance for a given player.
-
-```typescript
-const playerConsumableBalance: number = await sdk.players.getConsumableBalance(playerId, consumableContractId);
-
-console.log('Current balance:', playerConsumableBalance);
 ```
 
 ## Actions
@@ -268,8 +279,8 @@ await sdk.submissions.waitForSubmissionDone(submissionId);
 
 console.log('Transfer to player is complete!');
 
-const player = await sdk.players.loadPlayer(playerId);
-console.log('New balance:', await sdk.players.payprBalance);
+const playerPayprBalance = await sdk.players.getPayprBalance(playerId);
+console.log('New balance:', playerPayprBalance);
 ```
 
 ### Transfer Paypr from a player
@@ -297,8 +308,8 @@ await sdk.submissions.waitForSubmissionDone(submissionId);
 
 console.log('Transfer from player is complete!');
 
-const player = await sdk.players.loadPlayer(playerId);
-console.log('New balance:', await sdk.players.payprBalance);
+const playerPayprBalance = await sdk.players.getPayprBalance(playerId);
+console.log('New balance:', playerPayprBalance);
 ```
 
 ### Acquire the next skill level for a player

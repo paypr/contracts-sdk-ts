@@ -47,6 +47,7 @@ import { upgradePlayer } from '../graphql/mutations/upgradePlayer';
 import {
   getPlayerConsumableBalance,
   getPlayerItems,
+  getPlayerPayprBalance,
   getPlayerSkillLevel,
   loadPlayer,
   PlayerDetails,
@@ -120,6 +121,15 @@ export interface PlayersSdk {
    * @returns a promise to the balance
    */
   getConsumableBalance: (playerId: string, consumableContractId: string) => Promise<number>;
+
+  /**
+   * Gets the player's Paypr balance
+   *
+   * @param playerId the player ID
+   *
+   * @returns a promise to the balance
+   */
+  getPayprBalance: (playerId: string) => Promise<number>;
 
   /**
    * Estimate how much it would cost to transfer the given amount of consumable to the player
@@ -369,6 +379,8 @@ export const getPlayersSdk = (sdk: Sdk): PlayersSdk => ({
 
   getConsumableBalance: (playerId, consumableContractId) =>
     getPlayerConsumableBalance(sdk, playerId, consumableContractId),
+
+  getPayprBalance: (playerId) => getPlayerPayprBalance(sdk, playerId),
 
   estimateTransferConsumableToPlayer: (playerId, consumableContractId, amount) =>
     estimateTransferConsumableToPlayer(sdk, playerId, consumableContractId, amount),
