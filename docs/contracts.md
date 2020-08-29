@@ -6,8 +6,9 @@
 - [Information](#information)
   - [Load contract details](#load-contract-details)
   - [Get consumable balance](#get-consumable-balance)
-  - [Get consumable amounts needed to mint an item](#get-consumable-amounts-needed-to-mint-an-item)
   - [Get Paypr balance](#get-paypr-balance)
+  - [Get item details](#get-item-details)
+  - [Get consumable amounts needed to mint an item](#get-consumable-amounts-needed-to-mint-an-item)
 - [Actions](#actions)
   - [Transfer consumable to a contract](#transfer-consumable-to-a-contract)
   - [Transfer consumable from a contract](#transfer-consumable-from-a-contract)
@@ -57,6 +58,16 @@ Gets the Paypr balance for a given contract.
 const contractPayprBalance: number = await sdk.contracts.getPayprBalance(contractId);
 
 console.log('Current balance:', contractPayprBalance);
+```
+
+### Get item details
+
+Gets the item details for a given item ID.
+
+```typescript
+const itemDetails: number = await sdk.contracts.getConsumableBalance(artifactContractId, itemId);
+
+console.log('Num uses left:', itemDetails.usesLeft);
 ```
 
 ### Get consumable amounts needed to mint an item
