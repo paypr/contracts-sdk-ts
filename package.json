@@ -55,6 +55,7 @@
     "get-graphql-schema": "2.1.2",
     "husky": "4.2.5",
     "jest": "26.0.1",
+    "jest-junit": "11.1.0",
     "prettier": "2.0.5",
     "pretty-quick": "2.0.1",
     "standard-version": "8.0.0",
