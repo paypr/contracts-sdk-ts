@@ -45,7 +45,9 @@ export const contractDetailsFragment = gql`
 
     ... on ConsumableContract {
       symbol
-      exchangeRate
+      asymmetricalExchangeRate
+      purchasePriceExchangeRate
+      intrinsicValueExchangeRate
       totalSupply
       accountBalance
     }

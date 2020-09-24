@@ -654,14 +654,30 @@ type ConsumableContract implements BaseModel & BaseAccountModel & ContractLike &
   symbol: String!
 
   """
+  Whether the exchange rates are different, meaning that it costs more to
+  purchase each consumable than it can be exchanged for
+  """
+  asymmetricalExchangeRate: Boolean!
+
+  """
+  How much of this consumable does 1 Paypr exchange into
+  """
+  purchasePriceExchangeRate: Int!
+
+  """
   How much of this consumable is needed to exchange for 1 Paypr
   """
-  exchangeRate: Int!
+  intrinsicValueExchangeRate: Int!
 
   """
   The total amount of this consumable in circulation
   """
   totalSupply: Float!
+
+  """
+  The amount of Paypr available to transfer out
+  """
+  availablePayprBalance: Float!
 
   """
   The amount of this consumable is owned by the account
@@ -821,8 +837,18 @@ type ContractEdge {
   cursor: String!
 }
 
+"""
+Basic contract info
+"""
 input ContractInfoInput {
+  """
+  The name of the contract
+  """
   name: String!
+
+  """
+  The description of the contract
+  """
   description: String
 }
 
@@ -919,10 +945,33 @@ input CreateArtifactInput {
   discoverable: Boolean
 }
 
+"""
+Input data used when creating a consumable
+"""
 input CreateConsumableInput {
+  """
+  Basic contract info
+  """
   info: ContractInfoInput!
+
+  """
+  The ERC-20 token ticker symbol. When set, must be 8 characters or less and all uppercase
+  """
   symbol: String
-  exchangeRate: Int!
+
+  """
+  The exchange rate for the purchase price of the consumable
+  """
+  purchasePriceExchangeRate: Int!
+
+  """
+  The exchange rate for the intrinsic value of the consumable
+  """
+  intrinsicValueExchangeRate: Int
+
+  """
+  Whether or not the consumable should be discoverable by other accounts
+  """
   discoverable: Boolean
 }
 
