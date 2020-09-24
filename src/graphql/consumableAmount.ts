@@ -12,7 +12,9 @@ export const consumableAmountReferenceFragment = gql`
   fragment ConsumableAmountReference on ConsumableAmount {
     consumable {
       ...ContractReference
-      exchangeRate
+      asymmetricalExchangeRate
+      purchasePriceExchangeRate
+      intrinsicValueExchangeRate
     }
 
     amount
@@ -24,7 +26,9 @@ export const consumableAmountAndBalanceReferenceFragment = gql`
   fragment ConsumableAmountAndBalanceReference on ConsumableAmountAndBalance {
     consumable {
       ...ContractReference
-      exchangeRate
+      asymmetricalExchangeRate
+      purchasePriceExchangeRate
+      intrinsicValueExchangeRate
     }
 
     amount
