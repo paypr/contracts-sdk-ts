@@ -157,7 +157,7 @@ Mints a specific amount of consumable for a player.
 Estimate the cost in dollars and Paypr for the consumable:
 
 ```typescript
-const estimate = await sdk.players.estimateMintConsumableForPlayer(playerId, consumableContractId, amount);
+const estimate = await sdk.players.estimateMintConsumable(playerId, consumableContractId, amount);
 
 console.log('Gas cost:', estimate.gasCost);
 console.log('Paypr amount:', estimate.payprAmount);
@@ -168,7 +168,7 @@ console.log('Paypr amount:', estimate.payprAmount);
 Mint the consumable:
 
 ```typescript
-const submissionId = await sdk.players.mintConsumableForPlayer(playerId, consumableContractId, amount);
+const submissionId = await sdk.players.mintConsumable(playerId, consumableContractId, amount);
 
 await sdk.submissions.waitForSubmissionDone(submissionId);
 

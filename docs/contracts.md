@@ -98,7 +98,7 @@ Mints a specific amount of consumable for a contract.
 Estimate the cost in dollars and Paypr for the consumable:
 
 ```typescript
-const estimate = await sdk.contracts.estimateMintConsumableForContract(contractId, consumableContractId, amount);
+const estimate = await sdk.contracts.estimateMintConsumable(contractId, consumableContractId, amount);
 
 console.log('Gas cost:', estimate.gasCost);
 console.log('Paypr amount:', estimate.payprAmount);
@@ -109,7 +109,7 @@ console.log('Paypr amount:', estimate.payprAmount);
 Mint the consumable:
 
 ```typescript
-const submissionId = await sdk.contracts.mintConsumableForContract(contractId, consumableContractId, amount);
+const submissionId = await sdk.contracts.mintConsumable(contractId, consumableContractId, amount);
 
 await sdk.submissions.waitForSubmissionDone(submissionId);
 
