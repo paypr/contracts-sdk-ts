@@ -55,7 +55,7 @@ type Account implements BaseModel {
   transactions: TransactionConnection!
 }
 
-type AcquireNextSkillLevelForPlayerEstimate implements GasEstimate {
+type AcquireNextSkillLevelForPlayerEstimate implements GasEstimateCore & GasEstimate {
   """
   The amount of gas it will take to execute the Ethereum transaction
   """
@@ -448,7 +448,7 @@ interface BaseModel {
   updatedAt: ISODateTime!
 }
 
-type BasicGasAndPayprEstimate implements GasEstimate & GasAndPayprEstimate {
+type BasicGasAndPayprEstimate implements GasEstimateCore & GasEstimate & GasAndPayprEstimate {
   """
   The amount of gas it will take to execute the Ethereum transaction
   """
@@ -480,7 +480,7 @@ type BasicGasAndPayprEstimate implements GasEstimate & GasAndPayprEstimate {
   payprBalance: Float!
 }
 
-type BasicGasEstimate implements GasEstimate {
+type BasicGasEstimate implements GasEstimateCore & GasEstimate {
   """
   The amount of gas it will take to execute the Ethereum transaction
   """
@@ -975,6 +975,33 @@ input CreateConsumableInput {
   discoverable: Boolean
 }
 
+"""
+The estimate of the amount of gas needed and its cost for the transaction to
+create a contract, along with the gas needed for a typical transaction of the contract
+"""
+type CreateContractGasEstimate implements GasEstimateCore & GasEstimate {
+  """
+  The amount of gas it will take to execute the Ethereum transaction
+  """
+  gasAmount: Int!
+
+  """
+  The cost of the gas to execute the Ethereum transaction
+  """
+  gasCost: Float!
+
+  """
+  The current account balance, in USD
+  """
+  balance: Float!
+
+  """
+  The estimated amount that will be charged to the credit card on file to complete the transaction, in USD
+  """
+  prepayCharge: Float
+  typicalTransaction: TransactionGasCost
+}
+
 input CreatePlayerInput {
   name: String!
 }
@@ -1013,15 +1040,44 @@ interface DisableableContract {
 }
 
 type Estimates {
-  createActivity(input: CreateActivityInput!): BasicGasEstimate!
-  createArtifact(input: CreateArtifactInput!): BasicGasEstimate!
-  createConsumable(input: CreateConsumableInput!): BasicGasEstimate!
-  createSkill(input: CreateSkillInput!): BasicGasEstimate!
+  createActivity(input: CreateActivityInput!): CreateContractGasEstimate!
+  createArtifact(input: CreateArtifactInput!): CreateContractGasEstimate!
+  createConsumable(input: CreateConsumableInput!): CreateContractGasEstimate!
+  createSkill(input: CreateSkillInput!): CreateContractGasEstimate!
+
+  """
+  Estimates the cost in dollars and Paypr to mint a specific amount of consumable for a contract
+  """
+  mintConsumableForContract(contractId: ID!, consumableContractId: ID!, amount: Float!): BasicGasAndPayprEstimate!
+
+  """
+  Estimates the cost in dollars to transfer a specific amount of consumable from a contract to your account
+  """
   transferConsumableFromContract(contractId: ID!, consumableContractId: ID!, amount: Float!): BasicGasEstimate!
+
+  """
+  Estimates the cost in dollars and Paypr to transfer a specific amount of consumable from your account to a contract
+  """
   transferConsumableToContract(contractId: ID!, consumableContractId: ID!, amount: Float!): BasicGasAndPayprEstimate!
+
+  """
+  Estimates the cost in dollars to transfer a specific item from a contract to your account
+  """
   transferItemFromContract(contractId: ID!, artifactContractId: ID!, itemId: String!): BasicGasEstimate!
+
+  """
+  Estimates the cost in dollars and Paypr to transfer a specific item from your account to a contract
+  """
   transferItemToContract(contractId: ID!, artifactContractId: ID!, itemId: String!): BasicGasEstimate!
+
+  """
+  Estimates the cost in dollars to transfer a specific amount of Paypr from a contract to your account
+  """
   transferPayprFromContract(contractId: ID!, amount: Float!): BasicGasEstimate!
+
+  """
+  Estimates the cost in dollars to transfer a specific amount of consumable from your account to a contract
+  """
   transferPayprToContract(contractId: ID!, amount: Float!): BasicGasEstimate!
   upgradeContract(contractId: ID!): BasicGasEstimate!
   purchasePaypr(amount: Float!): PurchasePayprEstimate!
@@ -1036,17 +1092,50 @@ type Estimates {
     activityContractId: ID!
     itemsToUse: [ItemInput!]
   ): ExecuteActivityForPlayerEstimate!
+
+  """
+  Estimates the cost in dollars and Paypr to mint a specific amount of consumable for a player
+  """
+  mintConsumableForPlayer(playerId: ID!, consumableContractId: ID!, amount: Float!): BasicGasAndPayprEstimate!
+
+  """
+  Estimates the cost in dollars to mint an item for a player
+  """
   mintItemForPlayer(playerId: ID!, artifactContractId: ID!): MintItemForPlayerEstimate!
+
+  """
+  Estimates the cost in dollars to transfer a specific amount of consumable from a player to your account
+  """
   transferConsumableFromPlayer(playerId: ID!, consumableContractId: ID!, amount: Float!): BasicGasEstimate!
+
+  """
+  Estimates the cost in dollars and Paypr to transfer a specific amount of consumable from your account to a player
+  """
   transferConsumableToPlayer(playerId: ID!, consumableContractId: ID!, amount: Float!): BasicGasAndPayprEstimate!
+
+  """
+  Estimates the cost in dollars to transfer a specific item from a player to your account
+  """
   transferItemFromPlayer(playerId: ID!, artifactContractId: ID!, itemId: String!): BasicGasEstimate!
+
+  """
+  Estimates the cost in dollars to transfer a specific item from your account to a player
+  """
   transferItemToPlayer(playerId: ID!, artifactContractId: ID!, itemId: String!): BasicGasEstimate!
+
+  """
+  Estimates the cost in dollars to transfer a specific amount of Paypr from a player to your account
+  """
   transferPayprFromPlayer(playerId: ID!, amount: Float!): BasicGasEstimate!
+
+  """
+  Estimates the cost in dollars to transfer a specific amount of Paypr from your account to a player
+  """
   transferPayprToPlayer(playerId: ID!, amount: Float!): BasicGasEstimate!
   upgradePlayer(playerId: ID!): BasicGasEstimate!
 }
 
-type ExecuteActivityForPlayerEstimate implements GasEstimate {
+type ExecuteActivityForPlayerEstimate implements GasEstimateCore & GasEstimate {
   """
   The amount of gas it will take to execute the Ethereum transaction
   """
@@ -1114,7 +1203,8 @@ interface GasAndPayprEstimate {
 }
 
 """
-The estimate of the amount of gas needed and its cost for the transaction
+The estimate of the amount of gas needed and its cost for the transaction, plus
+the current account balance and any prepay charge
 """
 interface GasEstimate {
   """
@@ -1136,6 +1226,21 @@ interface GasEstimate {
   The estimated amount that will be charged to the credit card on file to complete the transaction, in USD
   """
   prepayCharge: Float
+}
+
+"""
+The estimate of the amount of gas needed and its cost for the transaction
+"""
+interface GasEstimateCore {
+  """
+  The amount of gas it will take to execute the Ethereum transaction
+  """
+  gasAmount: Int!
+
+  """
+  The cost of the gas to execute the Ethereum transaction
+  """
+  gasCost: Float!
 }
 
 scalar ISODateTime
@@ -1170,7 +1275,7 @@ input ItemInput {
   itemId: String!
 }
 
-type MintItemForPlayerEstimate implements GasEstimate {
+type MintItemForPlayerEstimate implements GasEstimateCore & GasEstimate {
   """
   The amount of gas it will take to execute the Ethereum transaction
   """
@@ -1209,12 +1314,41 @@ type Mutation {
   createSkill(input: CreateSkillInput!): BasicSubmissionResponse!
   disableContract(id: ID!): BasicSubmissionResponse!
   enableContract(id: ID!): BasicSubmissionResponse!
+
+  """
+  Mints a specific amount of consumable for a contract
+  """
+  mintConsumableForContract(contractId: ID!, consumableContractId: ID!, amount: Float!): BasicSubmissionResponse!
   publishContract(id: ID!): PublishContractResponse!
+
+  """
+  Transfers a specific amount of consumable from a contract to your account
+  """
   transferConsumableFromContract(contractId: ID!, consumableContractId: ID!, amount: Float!): BasicSubmissionResponse!
+
+  """
+  Transfers a specific amount of consumable from your account to a contract
+  """
   transferConsumableToContract(contractId: ID!, consumableContractId: ID!, amount: Float!): BasicSubmissionResponse!
+
+  """
+  Transfers a specific item from a contract to your account
+  """
   transferItemFromContract(contractId: ID!, artifactContractId: ID!, itemId: String!): BasicSubmissionResponse!
+
+  """
+  Transfers a specific item from your account to a contract
+  """
   transferItemToContract(contractId: ID!, artifactContractId: ID!, itemId: String!): BasicSubmissionResponse!
+
+  """
+  Transfers a specific amount of Paypr from a contract to your account
+  """
   transferPayprFromContract(contractId: ID!, amount: Float!): BasicSubmissionResponse!
+
+  """
+  Transfers a specific amount of Paypr from your account to a contract
+  """
   transferPayprToContract(contractId: ID!, amount: Float!): BasicSubmissionResponse!
   upgradeContract(contractId: ID!): BasicSubmissionResponse!
   purchasePaypr(amount: Float!): BasicSubmissionResponse!
@@ -1232,12 +1366,45 @@ type Mutation {
     amountsToProvide: [ConsumableAmountInput!]!
     amountsToConsume: [ConsumableAmountInput!]
   ): BasicSubmissionResponse!
+
+  """
+  Mints a specific amount of consumable for a player
+  """
+  mintConsumableForPlayer(playerId: ID!, consumableContractId: ID!, amount: Float!): BasicSubmissionResponse!
+
+  """
+  Mints an item for a player
+  """
   mintItemForPlayer(playerId: ID!, artifactContractId: ID!): BasicSubmissionResponse!
+
+  """
+  Transfers a specific amount of consumable from a player to your account
+  """
   transferConsumableFromPlayer(playerId: ID!, consumableContractId: ID!, amount: Float!): BasicSubmissionResponse!
+
+  """
+  Transfers a specific amount of consumable to a player from your account
+  """
   transferConsumableToPlayer(playerId: ID!, consumableContractId: ID!, amount: Float!): BasicSubmissionResponse!
+
+  """
+  Transfers a specific item from a player to your account
+  """
   transferItemFromPlayer(playerId: ID!, artifactContractId: ID!, itemId: String!): BasicSubmissionResponse!
+
+  """
+  Transfers a specific item to a player from your account
+  """
   transferItemToPlayer(playerId: ID!, artifactContractId: ID!, itemId: String!): BasicSubmissionResponse!
+
+  """
+  Transfers a specific amount of Paypr from a player to your account
+  """
   transferPayprFromPlayer(playerId: ID!, amount: Float!): BasicSubmissionResponse!
+
+  """
+  Transfers a specific amount of Paypr to a player from your account
+  """
   transferPayprToPlayer(playerId: ID!, amount: Float!): BasicSubmissionResponse!
   upgradePlayer(playerId: ID!): BasicSubmissionResponse!
 }
@@ -1390,7 +1557,7 @@ type PublishContractResponse {
   contract: Contract!
 }
 
-type PurchasePayprEstimate implements GasEstimate {
+type PurchasePayprEstimate implements GasEstimateCore & GasEstimate {
   """
   The amount of gas it will take to execute the Ethereum transaction
   """
@@ -1761,6 +1928,21 @@ type TransactionEdge {
   The cursor at this item, for use in pagination
   """
   cursor: String!
+}
+
+"""
+Details for the transaction
+"""
+type TransactionGasCost implements GasEstimateCore {
+  """
+  The amount of gas it will take to execute the Ethereum transaction
+  """
+  gasAmount: Int!
+
+  """
+  The cost of the gas to execute the Ethereum transaction
+  """
+  gasCost: Float!
 }
 
 enum TransactionType {

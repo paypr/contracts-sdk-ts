@@ -11,8 +11,10 @@
   - [Get skill level](#get-skill-level)
 - [Actions](#actions)
   - [Create a player](#create-a-player)
+  - [Mint consumable for a player](#mint-consumable-for-a-player)
   - [Transfer consumable to a player](#transfer-consumable-to-a-player)
   - [Transfer consumable from a player](#transfer-consumable-from-a-player)
+  - [Mint an item for a player](#mint-an-item-for-a-player)
   - [Transfer an item to a player](#transfer-an-item-to-a-player)
   - [Transfer an item from a player](#transfer-an-item-from-a-player)
   - [Transfer Paypr to a player](#transfer-paypr-to-a-player)
@@ -20,7 +22,6 @@
   - [Upgrade a player](#upgrade-a-player)
   - [Acquire the next skill level for a player](#acquire-the-next-skill-level-for-a-player)
   - [Execute an activity level for a player](#execute-an-activity-for-a-player)
-  - [Mint an item for a player](#mint-an-item-for-a-player)
 
 ## Access
 
@@ -147,6 +148,34 @@ const player: PlayerReference = submission.player;
 console.log(player.version);
 ```
 
+### Mint consumable for a player
+
+Mints a specific amount of consumable for a player.
+
+#### Estimate
+
+Estimate the cost in dollars and Paypr to mint the consumable:
+
+```typescript
+const estimate = await sdk.players.estimateMintConsumable(playerId, consumableContractId, amount);
+
+console.log('Gas cost:', estimate.gasCost);
+console.log('Paypr amount:', estimate.payprAmount);
+```
+
+#### Execute
+
+Mint the consumable:
+
+```typescript
+const submissionId = await sdk.players.mintConsumable(playerId, consumableContractId, amount);
+
+await sdk.submissions.waitForSubmissionDone(submissionId);
+
+console.log('Mint consuamble is complete!');
+console.log('New balance:', await sdk.players.getConsumableBalance(playerId, consumableContractId));
+```
+
 ### Transfer consumable to a player
 
 Transfers a specific amount of consumable from your account to a player.
@@ -200,6 +229,32 @@ await sdk.submissions.waitForSubmissionDone(submissionId);
 
 console.log('Transfer from player is complete!');
 console.log('New balance:', await sdk.players.getConsumableBalance(playerId, consumableContractId));
+```
+
+### Mint an item for a player
+
+Mint an item for a player.
+
+#### Estimate
+
+Estimate the cost to mint the item:
+
+```typescript
+const estimate = await sdk.players.estimateMintItem(playerId, activityContractId);
+
+console.log('Gas cost:', estimate.gasCost);
+```
+
+#### Execute
+
+Execute the item:
+
+```typescript
+const submissionId = await sdk.players.mintItem(playerId, activityContractId);
+
+const submission = await sdk.submissions.waitForSubmissionDone(submissionId);
+
+console.log('Item minted:', submission.item?.itemId);
 ```
 
 ### Transfer an item to a player
@@ -369,30 +424,4 @@ const submissionId = await sdk.players.executeActivity(
 await sdk.submissions.waitForSubmissionDone(submissionId);
 
 console.log('Activity executed!');
-```
-
-### Mint an item for a player
-
-Mint an item for a player.
-
-#### Estimate
-
-Estimate the cost to mint the item:
-
-```typescript
-const estimate = await sdk.players.estimateMintItem(playerId, activityContractId);
-
-console.log('Gas cost:', estimate.gasCost);
-```
-
-#### Execute
-
-Execute the item:
-
-```typescript
-const submissionId = await sdk.players.mintItem(playerId, activityContractId);
-
-const submission = await sdk.submissions.waitForSubmissionDone(submissionId);
-
-console.log('Item minted:', submission.item?.itemId);
 ```

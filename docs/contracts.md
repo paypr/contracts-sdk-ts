@@ -10,6 +10,7 @@
   - [Get item details](#get-item-details)
   - [Get consumable amounts needed to mint an item](#get-consumable-amounts-needed-to-mint-an-item)
 - [Actions](#actions)
+  - [Mint consumable for a contract](#mint-consumable-for-a-contract)
   - [Transfer consumable to a contract](#transfer-consumable-to-a-contract)
   - [Transfer consumable from a contract](#transfer-consumable-from-a-contract)
   - [Transfer Paypr to a contract](#transfer-paypr-to-a-contract)
@@ -87,6 +88,34 @@ consumableBalancesNeeded.forEach(({ consumable, amount, balance }) => {
 ```
 
 ## Actions
+
+### Mint consumable for a contract
+
+Mints a specific amount of consumable for a contract.
+
+#### Estimate
+
+Estimate the cost in dollars and Paypr to mint the consumable:
+
+```typescript
+const estimate = await sdk.contracts.estimateMintConsumable(contractId, consumableContractId, amount);
+
+console.log('Gas cost:', estimate.gasCost);
+console.log('Paypr amount:', estimate.payprAmount);
+```
+
+#### Execute
+
+Mint the consumable:
+
+```typescript
+const submissionId = await sdk.contracts.mintConsumable(contractId, consumableContractId, amount);
+
+await sdk.submissions.waitForSubmissionDone(submissionId);
+
+console.log('Mint consuamble is complete!');
+console.log('New balance:', await sdk.contracts.getConsumableBalance(contractId, consumableContractId));
+```
 
 ### Transfer consumable to a contract
 
