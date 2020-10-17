@@ -154,7 +154,7 @@ Mints a specific amount of consumable for a player.
 
 #### Estimate
 
-Estimate the cost in dollars and Paypr for the consumable:
+Estimate the cost in dollars and Paypr to mint the consumable:
 
 ```typescript
 const estimate = await sdk.players.estimateMintConsumable(playerId, consumableContractId, amount);
