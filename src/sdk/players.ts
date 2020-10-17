@@ -8,6 +8,7 @@ import {
   estimateExecuteActivityForPlayer,
   ExecuteActivityForPlayerEstimateDetails,
 } from '../graphql/estimates/executeActivityForPlayer';
+import { estimateMintConsumableForPlayer } from '../graphql/estimates/mintConsumableForPlayer';
 import { estimateMintItemForPlayer, MintItemForPlayerEstimateDetails } from '../graphql/estimates/mintItemForPlayer';
 import {
   estimateTransferConsumableFromPlayer,
@@ -36,6 +37,7 @@ import {
   executeActivityForPlayer,
   ExecuteActivityForPlayerOptions,
 } from '../graphql/mutations/executeActivityForPlayer';
+import { mintConsumableForPlayer } from '../graphql/mutations/mintConsumableForPlayer';
 import { mintItemForPlayer } from '../graphql/mutations/mintItemForPlayer';
 import { transferConsumableFromPlayer } from '../graphql/mutations/transferConsumableFromPlayer';
 import { transferConsumableToPlayer } from '../graphql/mutations/transferConsumableToPlayer';
@@ -132,6 +134,32 @@ export interface PlayersSdk {
   getPayprBalance: (playerId: string) => Promise<number>;
 
   /**
+   * Estimate how much it would cost to mint the given amount of consumable for the player
+   *
+   * @param playerId the player ID
+   * @param consumableContractId the consumable contract ID
+   * @param amount the amount of consumable to mint
+   *
+   * @returns a promise to the estimate details
+   */
+  estimateMintConsumable: (
+    playerId: string,
+    consumableContractId: string,
+    amount: number,
+  ) => Promise<GasAndPayprEstimateDetails>;
+
+  /**
+   * Mints the given amount of consumable for the player
+   *
+   * @param playerId the player ID
+   * @param consumableContractId the consumable contract ID
+   * @param amount the amount of consumable to mint
+   *
+   * @returns a promise to a submission id
+   */
+  mintConsumable: (playerId: string, consumableContractId: string, amount: number) => Promise<string>;
+
+  /**
    * Estimate how much it would cost to transfer the given amount of consumable to the player
    *
    * @param playerId the player ID
@@ -182,6 +210,26 @@ export interface PlayersSdk {
    * @returns a promise to a submission id
    */
   transferConsumableFromPlayer: (playerId: string, consumableContractId: string, amount: number) => Promise<string>;
+
+  /**
+   * Estimate to mint an item for the player.
+   *
+   * @param playerId the player ID
+   * @param artifactContractId the artifact contract ID
+   *
+   * @returns a promise to the estimate
+   */
+  estimateMintItem: (playerId: string, artifactContractId: string) => Promise<MintItemForPlayerEstimateDetails>;
+
+  /**
+   * Mints an item for the player.
+   *
+   * @param playerId the player ID
+   * @param artifactContractId the artifact contract ID
+   *
+   * @returns a promise to a submission id
+   */
+  mintItem: (playerId: string, artifactContractId: string) => Promise<string>;
 
   /**
    * Estimate how much it would cost to transfer the given item to the player
@@ -343,26 +391,6 @@ export interface PlayersSdk {
     amountsToConsume: ApiConsumableAmountInput[],
     options?: ExecuteActivityForPlayerOptions,
   ) => Promise<string>;
-
-  /**
-   * Estimate to mint an item for the player.
-   *
-   * @param playerId the player ID
-   * @param artifactContractId the artifact contract ID
-   *
-   * @returns a promise to the estimate
-   */
-  estimateMintItem: (playerId: string, artifactContractId: string) => Promise<MintItemForPlayerEstimateDetails>;
-
-  /**
-   * Mints an item for the player.
-   *
-   * @param playerId the player ID
-   * @param artifactContractId the artifact contract ID
-   *
-   * @returns a promise to a submission id
-   */
-  mintItem: (playerId: string, artifactContractId: string) => Promise<string>;
 }
 
 export const getPlayersSdk = (sdk: Sdk): PlayersSdk => ({
@@ -382,6 +410,11 @@ export const getPlayersSdk = (sdk: Sdk): PlayersSdk => ({
 
   getPayprBalance: (playerId) => getPlayerPayprBalance(sdk, playerId),
 
+  estimateMintConsumable: (playerId, consumableContractId, amount) =>
+    estimateMintConsumableForPlayer(sdk, playerId, consumableContractId, amount),
+  mintConsumable: (playerId, consumableContractId, amount) =>
+    mintConsumableForPlayer(sdk, playerId, consumableContractId, amount),
+
   estimateTransferConsumableToPlayer: (playerId, consumableContractId, amount) =>
     estimateTransferConsumableToPlayer(sdk, playerId, consumableContractId, amount),
   transferConsumableToPlayer: (playerId, consumableContractId, amount) =>
@@ -391,6 +424,9 @@ export const getPlayersSdk = (sdk: Sdk): PlayersSdk => ({
     estimateTransferConsumableFromPlayer(sdk, playerId, consumableContractId, amount),
   transferConsumableFromPlayer: (playerId, consumableContractId, amount) =>
     transferConsumableFromPlayer(sdk, playerId, consumableContractId, amount),
+
+  estimateMintItem: (playerId, artifactContractId) => estimateMintItemForPlayer(sdk, playerId, artifactContractId),
+  mintItem: (playerId, artifactContractId) => mintItemForPlayer(sdk, playerId, artifactContractId),
 
   estimateTransferItemToPlayer: (playerId, artifactContractId, itemId) =>
     estimateTransferItemToPlayer(sdk, playerId, artifactContractId, itemId),
@@ -417,7 +453,4 @@ export const getPlayersSdk = (sdk: Sdk): PlayersSdk => ({
     estimateExecuteActivityForPlayer(sdk, playerId, activityContractId, options),
   executeActivity: (playerId, activityContractId, amountsToProvide, amountsToConsume, options?) =>
     executeActivityForPlayer(sdk, playerId, activityContractId, amountsToProvide, amountsToConsume, options),
-
-  estimateMintItem: (playerId, artifactContractId) => estimateMintItemForPlayer(sdk, playerId, artifactContractId),
-  mintItem: (playerId, artifactContractId) => mintItemForPlayer(sdk, playerId, artifactContractId),
 });

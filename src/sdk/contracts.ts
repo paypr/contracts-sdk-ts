@@ -7,6 +7,7 @@ import {
   getContractPayprBalance,
   loadContract,
 } from '../graphql/contracts';
+import { estimateMintConsumableForContract } from '../graphql/estimates/mintConsumableForContract';
 import {
   estimateTransferConsumableFromContract,
   TransferConsumableFromContractEstimateDetails,
@@ -19,6 +20,7 @@ import {
 import { estimateTransferPayprToContract } from '../graphql/estimates/transferPayprToContract';
 import { GasAndPayprEstimateDetails, GasEstimateDetails } from '../graphql/gasEstimate';
 import { ItemDetails } from '../graphql/items';
+import { mintConsumableForContract } from '../graphql/mutations/mintConsumableForContract';
 import { transferConsumableFromContract } from '../graphql/mutations/transferConsumableFromContract';
 import { transferConsumableToContract } from '../graphql/mutations/transferConsumableToContract';
 import { transferPayprFromContract } from '../graphql/mutations/transferPayprFromContract';
@@ -70,6 +72,32 @@ export interface ContractSdk {
    * @returns a promise to the balance
    */
   getPayprBalance: (contractId: string) => Promise<number>;
+
+  /**
+   * Estimate how much it would cost to mint the given amount of consumable for the contract
+   *
+   * @param contractId the contract ID
+   * @param consumableContractId the consumable contract ID
+   * @param amount the amount of consumable to mint
+   *
+   * @returns a promise to the estimate details
+   */
+  estimateMintConsumable: (
+    contractId: string,
+    consumableContractId: string,
+    amount: number,
+  ) => Promise<GasAndPayprEstimateDetails>;
+
+  /**
+   * Mints the given amount of consumable for the contract
+   *
+   * @param contractId the contract ID
+   * @param consumableContractId the consumable contract ID
+   * @param amount the amount of consumable to mint
+   *
+   * @returns a promise to a submission id
+   */
+  mintConsumable: (contractId: string, consumableContractId: string, amount: number) => Promise<string>;
 
   /**
    * Estimate how much it would cost to transfer the given amount of consumable to the contract
@@ -179,6 +207,11 @@ export const getContractsSdk = (sdk: Sdk): ContractSdk => ({
     getContractConsumableBalance(sdk, contractId, consumableContractId),
 
   getPayprBalance: (contractId) => getContractPayprBalance(sdk, contractId),
+
+  estimateMintConsumable: (contractId, consumableContractId, amount) =>
+    estimateMintConsumableForContract(sdk, contractId, consumableContractId, amount),
+  mintConsumable: (contractId, consumableContractId, amount) =>
+    mintConsumableForContract(sdk, contractId, consumableContractId, amount),
 
   estimateTransferConsumableToContract: (contractId, consumableContractId, amount) =>
     estimateTransferConsumableToContract(sdk, contractId, consumableContractId, amount),
