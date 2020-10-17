@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.1](https://github.com/paypr/contracts-sdk-ts/compare/v0.4.0...v0.4.1) (2020-10-17)
+
+### Features
+
+- [[#20](https://github.com/paypr/contracts-sdk-ts/issues/20)] add ability to mint consumables for players and contracts ([99a51a4](https://github.com/paypr/contracts-sdk-ts/commit/99a51a45f99b1c47a3c8bd10ee5af38d6a32e650))
+
 ## [0.4.0](https://github.com/paypr/contracts-sdk-ts/compare/v0.3.4...v0.4.0) (2020-09-24)
 
 ### ⚠ BREAKING CHANGES
