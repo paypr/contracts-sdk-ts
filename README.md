@@ -73,4 +73,4 @@ and test the software to help contribute.
 
 ## License
 
-UNLICENSED
+[MIT](LICENSE)

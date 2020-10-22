@@ -2,7 +2,7 @@
   "author": "The Paypr Company",
   "name": "@paypr/contracts-sdk-ts",
   "description": "Contracts SDK for JavaScript and Typescript",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "version": "0.4.1",
   "homepage": "https://paypr.money/",
   "repository": {
