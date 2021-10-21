@@ -1058,7 +1058,7 @@ type Estimates {
   """
   Estimates the cost in dollars and Paypr to transfer a specific amount of consumable from your account to a contract
   """
-  transferConsumableToContract(contractId: ID!, consumableContractId: ID!, amount: Float!): BasicGasAndPayprEstimate!
+  transferConsumableToContract(contractId: ID!, consumableContractId: ID!, amount: Float!): BasicGasEstimate!
 
   """
   Estimates the cost in dollars to transfer a specific item from a contract to your account
@@ -1111,7 +1111,7 @@ type Estimates {
   """
   Estimates the cost in dollars and Paypr to transfer a specific amount of consumable from your account to a player
   """
-  transferConsumableToPlayer(playerId: ID!, consumableContractId: ID!, amount: Float!): BasicGasAndPayprEstimate!
+  transferConsumableToPlayer(playerId: ID!, consumableContractId: ID!, amount: Float!): BasicGasEstimate!
 
   """
   Estimates the cost in dollars to transfer a specific item from a player to your account

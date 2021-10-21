@@ -21,14 +21,14 @@
 
 import gql from 'graphql-tag';
 import { Sdk } from '../../generated/graphql';
-import { GasAndPayprEstimateDetails, gasAndPayprEstimateDetailsFragment } from '../gasEstimate';
+import { GasEstimateDetails, gasEstimateDetailsFragment } from '../gasEstimate';
 
 export const estimateTransferConsumableToContract = async (
   sdk: Sdk,
   contractId: string,
   consumableContractId: string,
   amount: number,
-): Promise<GasAndPayprEstimateDetails> => {
+): Promise<GasEstimateDetails> => {
   const {
     estimates: { transferConsumableToContract },
   } = await sdk.estimateTransferConsumableToContract({ contractId, consumableContractId, amount });
@@ -43,9 +43,9 @@ gql`
         consumableContractId: $consumableContractId
         amount: $amount
       ) {
-        ...GasAndPayprEstimateDetails
+        ...GasEstimateDetails
       }
     }
   }
-  ${gasAndPayprEstimateDetailsFragment}
+  ${gasEstimateDetailsFragment}
 `;
