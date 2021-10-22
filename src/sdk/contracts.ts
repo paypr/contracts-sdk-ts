@@ -133,7 +133,7 @@ export interface ContractSdk {
     contractId: string,
     consumableContractId: string,
     amount: number,
-  ) => Promise<GasAndPayprEstimateDetails>;
+  ) => Promise<GasEstimateDetails>;
 
   /**
    * Transfer's the given amount of consumable to the contract

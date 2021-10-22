@@ -21,7 +21,7 @@
 
 import gql from 'graphql-tag';
 import { ApiTransferPayprToContractEstimateDetails, Sdk } from '../../generated/graphql';
-import { gasAndPayprEstimateDetailsFragment } from '../gasEstimate';
+import { gasEstimateDetailsFragment } from '../gasEstimate';
 
 /** Estimate of the cost to transfer Paypr to a contract */
 export type TransferPayprToContractEstimateDetails = ApiTransferPayprToContractEstimateDetails;
@@ -49,5 +49,5 @@ gql`
   fragment TransferPayprToContractEstimateDetails on GasEstimate {
     ...GasEstimateDetails
   }
-  ${gasAndPayprEstimateDetailsFragment}
+  ${gasEstimateDetailsFragment}
 `;

@@ -193,7 +193,7 @@ export interface PlayersSdk {
     playerId: string,
     consumableContractId: string,
     amount: number,
-  ) => Promise<GasAndPayprEstimateDetails>;
+  ) => Promise<GasEstimateDetails>;
 
   /**
    * Transfers the given amount of consumable to the player
