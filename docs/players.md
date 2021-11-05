@@ -96,22 +96,14 @@ console.log('Current level:', playerSkillLevel);
 
 Creates a new player with the given name.
 
-#### Estimate
-
-Estimate creating the player:
+Estimate creating the player and execute the transaction:
 
 ```typescript
-const estimate = await sdk.players.estimateCreatePlayer({ name: 'Tom Jones' });
+const estimate = await sdk.players.estimateCreatePlayer();
 
 console.log(estimate.gasCost);
-```
 
-#### Execute
-
-Create the player:
-
-```typescript
-const submissionId = await sdk.players.createPlayer({ name: 'Tom Jones' });
+const submissionId = await sdk.players.createPlayer('Tom Jones', estimate.transactionRequest);
 
 const submission: SubmissionDetails = await sdk.submissions.waitForSubmissionDone(submissionId);
 
@@ -124,22 +116,14 @@ console.log(player.name);
 
 Upgrades a player with a given ID to the latest version of the Ethereum contract.
 
-#### Estimate
-
-Estimate upgrading the player:
+Estimate upgrading the player and execute the transaction:
 
 ```typescript
 const estimate = await sdk.players.estimateUpgradePlayer(playerId);
 
 console.log(estimate.gasCost);
-```
 
-#### Execute
-
-Upgrade the player:
-
-```typescript
-const submissionId = await sdk.players.upgradePlayer(playerId);
+const submissionId = await sdk.contracts.executeTransaction(estimate.transactionRequest);
 
 const submission: SubmissionDetails = await sdk.submissions.waitForSubmissionDone(submissionId);
 
@@ -152,23 +136,15 @@ console.log(player.version);
 
 Mints a specific amount of consumable for a player.
 
-#### Estimate
-
-Estimate the cost in dollars and Paypr to mint the consumable:
+Estimate the cost in dollars and Paypr to mint the consumable and execute the transaction:
 
 ```typescript
 const estimate = await sdk.players.estimateMintConsumable(playerId, consumableContractId, amount);
 
 console.log('Gas cost:', estimate.gasCost);
 console.log('Paypr amount:', estimate.payprAmount);
-```
 
-#### Execute
-
-Mint the consumable:
-
-```typescript
-const submissionId = await sdk.players.mintConsumable(playerId, consumableContractId, amount);
+const submissionId = await sdk.contracts.executeTransaction(estimate.transactionRequest);
 
 await sdk.submissions.waitForSubmissionDone(submissionId);
 
@@ -180,23 +156,15 @@ console.log('New balance:', await sdk.players.getConsumableBalance(playerId, con
 
 Transfers a specific amount of consumable from your account to a player.
 
-#### Estimate
-
-Estimate the cost in dollars and Paypr for the transfer:
+Estimate the cost in dollars and Paypr for the transfer and execute the transaction:
 
 ```typescript
 const estimate = await sdk.players.estimateTransferConsumableToPlayer(playerId, consumableContractId, amount);
 
 console.log('Gas cost:', estimate.gasCost);
 console.log('Paypr amount:', estimate.payprAmount);
-```
 
-#### Execute
-
-Transfer the consumable:
-
-```typescript
-const submissionId = await sdk.players.transferConsumableToPlayer(playerId, consumableContractId, amount);
+const submissionId = await sdk.contracts.executeTransaction(estimate.transactionRequest);
 
 await sdk.submissions.waitForSubmissionDone(submissionId);
 
@@ -210,20 +178,14 @@ Transfers a specific amount of consumable from a player to your account.
 
 #### Estimate
 
-Estimate the cost to transfer the consumable:
+Estimate the cost to transfer the consumable and execute the transaction:
 
 ```typescript
 const estimate = await sdk.players.estimateTransferConsumableFromPlayer(playerId, consumableContractId, amount);
 
 console.log('Gas cost:', estimate.gasCost);
-```
 
-#### Execute
-
-Transfer the consumable:
-
-```typescript
-const submissionId = await sdk.players.transferConsumableFromPlayer(playerId, consumableContractId, amount);
+const submissionId = await sdk.contracts.executeTransaction(estimate.transactionRequest);
 
 await sdk.submissions.waitForSubmissionDone(submissionId);
 
@@ -235,22 +197,14 @@ console.log('New balance:', await sdk.players.getConsumableBalance(playerId, con
 
 Mint an item for a player.
 
-#### Estimate
-
-Estimate the cost to mint the item:
+Estimate the cost to mint the item and execute the transaction:
 
 ```typescript
 const estimate = await sdk.players.estimateMintItem(playerId, activityContractId);
 
 console.log('Gas cost:', estimate.gasCost);
-```
 
-#### Execute
-
-Execute the item:
-
-```typescript
-const submissionId = await sdk.players.mintItem(playerId, activityContractId);
+const submissionId = await sdk.contracts.executeTransaction(estimate.transactionRequest);
 
 const submission = await sdk.submissions.waitForSubmissionDone(submissionId);
 
@@ -261,22 +215,14 @@ console.log('Item minted:', submission.item?.itemId);
 
 Transfers a specific item from your account to a player.
 
-#### Estimate
-
-Estimate the cost for the transfer:
+Estimate the cost for the transfer and execute the transaction:
 
 ```typescript
 const estimate = await sdk.players.estimateTransferItemToPlayer(playerId, artifactContractId, itemId);
 
 console.log('Gas cost:', estimate.gasCost);
-```
 
-#### Execute
-
-Transfer the item:
-
-```typescript
-const submissionId = await sdk.players.transferItemToPlayer(playerId, artifactContractId, itemId);
+const submissionId = await sdk.contracts.executeTransaction(estimate.transactionRequest);
 
 await sdk.submissions.waitForSubmissionDone(submissionId);
 
@@ -287,22 +233,14 @@ console.log('Transfer to player is complete!');
 
 Transfers a specific item from a player to your account.
 
-#### Estimate
-
-Estimate the cost to transfer the item:
+Estimate the cost to transfer the item and execute the transaction:
 
 ```typescript
 const estimate = await sdk.players.estimateTransferItemFromPlayer(playerId, artifactContractId, itemId);
 
 console.log('Gas cost:', estimate.gasCost);
-```
 
-#### Execute
-
-Transfer the item:
-
-```typescript
-const submissionId = await sdk.players.transferItemFromPlayer(playerId, artifactContractId, itemId);
+const submissionId = await sdk.contracts.executeTransaction(estimate.transactionRequest);
 
 await sdk.submissions.waitForSubmissionDone(submissionId);
 
@@ -313,22 +251,14 @@ console.log('Transfer from player is complete!');
 
 Transfers a specific amount of Paypr from your account to a player.
 
-#### Estimate
-
-Estimate the cost for the transfer:
+Estimate the cost for the transfer and execute the transaction:
 
 ```typescript
 const estimate = await sdk.players.estimateTransferPayprToPlayer(playerId, amount);
 
 console.log('Gas cost:', estimate.gasCost);
-```
 
-#### Execute
-
-Transfer the Paypr:
-
-```typescript
-const submissionId = await sdk.players.transferPayprToPlayer(playerId, amount);
+const submissionId = await sdk.contracts.executeTransaction(estimate.transactionRequest);
 
 await sdk.submissions.waitForSubmissionDone(submissionId);
 
@@ -342,22 +272,14 @@ console.log('New balance:', playerPayprBalance);
 
 Transfers a specific amount of Paypr from a player to your account.
 
-#### Estimate
-
-Estimate the cost to transfer the Paypr:
+Estimate the cost to transfer the Paypr and execute the transaction:
 
 ```typescript
 const estimate = await sdk.players.estimateTransferPayprFromPlayer(playerId, amount);
 
 console.log('Gas cost:', estimate.gasCost);
-```
 
-#### Execute
-
-Transfer the Paypr:
-
-```typescript
-const submissionId = await sdk.players.transferPayprFromPlayer(playerId, amount);
+const submissionId = await sdk.contracts.executeTransaction(estimate.transactionRequest);
 
 await sdk.submissions.waitForSubmissionDone(submissionId);
 
@@ -371,22 +293,14 @@ console.log('New balance:', playerPayprBalance);
 
 Acquires the next skill level for a player.
 
-#### Estimate
-
-Estimate the cost and consumables needed to acquire the skill level:
+Estimate the cost and consumables needed to acquire the skill level and execute the transaction:
 
 ```typescript
 const estimate = await sdk.players.estimateAcquireNextSkillLevel(playerId, skillContractId);
 
 console.log('Consumables needed:', estimate.consumableAmountsNeeded);
-```
 
-#### Execute
-
-Acquire the skill level:
-
-```typescript
-const submissionId = await sdk.players.acquireNextSkillLevel(playerId, skillContractId, consumableAmountsToProvide);
+const submissionId = await sdk.contracts.executeTransaction(estimate.transactionRequest);
 
 await sdk.submissions.waitForSubmissionDone(submissionId);
 
@@ -398,28 +312,15 @@ console.log('New skill level:', await sdk.players.getSkillLevel(playerId, skillC
 
 Executes an activity for a player.
 
-#### Estimate
-
-Estimate the cost and consumables needed to execute the activity:
+Estimate the cost and consumables needed to execute the activity and execute the transaction:
 
 ```typescript
 const estimate = await sdk.players.estimateExecuteActivity(playerId, activityContractId);
 
 console.log('Consumables needed:', estimate.consumableAmountsNeeded);
 console.log('Consumables provided:', estimate.consumableAmountsProvided);
-```
 
-#### Execute
-
-Execute the activity:
-
-```typescript
-const submissionId = await sdk.players.executeActivity(
-  playerId,
-  activityContractId,
-  consumableAmountsToProvide,
-  consumableAmountsToConsume,
-);
+const submissionId = await sdk.contracts.executeTransaction(estimate.transactionRequest);
 
 await sdk.submissions.waitForSubmissionDone(submissionId);
 

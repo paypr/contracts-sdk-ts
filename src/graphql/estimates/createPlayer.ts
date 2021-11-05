@@ -20,23 +20,23 @@
  */
 
 import gql from 'graphql-tag';
-import { ApiCreatePlayerInput, Sdk } from '../../generated/graphql';
-import { GasEstimateDetails, gasEstimateDetailsFragment } from '../gasEstimate';
+import { Sdk } from '../../generated/graphql';
+import { GasAndTransactionEstimateDetails, gasAndTransactionEstimateDetailsFragment } from '../gasEstimate';
 
-export const estimateCreatePlayer = async (sdk: Sdk, input: ApiCreatePlayerInput): Promise<GasEstimateDetails> => {
+export const estimateCreatePlayer = async (sdk: Sdk): Promise<GasAndTransactionEstimateDetails> => {
   const {
     estimates: { createPlayer },
-  } = await sdk.estimateCreatePlayer({ input });
+  } = await sdk.estimateCreatePlayer();
   return createPlayer;
 };
 
 gql`
-  query estimateCreatePlayer($input: CreatePlayerInput!) {
+  query estimateCreatePlayer {
     estimates {
-      createPlayer(input: $input) {
-        ...GasEstimateDetails
+      createPlayer {
+        ...GasAndTransactionEstimateDetails
       }
     }
   }
-  ${gasEstimateDetailsFragment}
+  ${gasAndTransactionEstimateDetailsFragment}
 `;

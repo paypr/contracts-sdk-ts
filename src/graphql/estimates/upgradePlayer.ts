@@ -21,9 +21,9 @@
 
 import gql from 'graphql-tag';
 import { Sdk } from '../../generated/graphql';
-import { GasEstimateDetails, gasEstimateDetailsFragment } from '../gasEstimate';
+import { GasAndTransactionEstimateDetails, gasAndTransactionEstimateDetailsFragment } from '../gasEstimate';
 
-export const estimateUpgradePlayer = async (sdk: Sdk, playerId: string): Promise<GasEstimateDetails> => {
+export const estimateUpgradePlayer = async (sdk: Sdk, playerId: string): Promise<GasAndTransactionEstimateDetails> => {
   const {
     estimates: { upgradePlayer },
   } = await sdk.estimateUpgradePlayer({ playerId });
@@ -34,9 +34,9 @@ gql`
   query estimateUpgradePlayer($playerId: ID!) {
     estimates {
       upgradePlayer(playerId: $playerId) {
-        ...GasEstimateDetails
+        ...GasAndTransactionEstimateDetails
       }
     }
   }
-  ${gasEstimateDetailsFragment}
+  ${gasAndTransactionEstimateDetailsFragment}
 `;

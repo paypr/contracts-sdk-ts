@@ -20,12 +20,16 @@
  */
 
 import gql from 'graphql-tag';
-import { ApiGasAndPayprEstimateDetails, ApiGasEstimateDetails } from '../generated/graphql';
+import {
+  ApiGasAndPayprEstimateDetails,
+  ApiGasAndTransactionEstimateDetails,
+  ApiGasEstimateDetails,
+} from '../generated/graphql';
 
 /** Details of how much it will cost to execute a contract */
 export type GasEstimateDetails = ApiGasEstimateDetails;
 
-export const gasEstimateDetailsFragment = gql`
+export const gasEstimateDetails = gql`
   fragment GasEstimateDetails on GasEstimate {
     gasAmount
     gasCost
@@ -34,16 +38,30 @@ export const gasEstimateDetailsFragment = gql`
   }
 `;
 
+/** Details of how much it will cost to execute a contract, along with a transaction request */
+export type GasAndTransactionEstimateDetails = ApiGasAndTransactionEstimateDetails;
+
+export const gasAndTransactionEstimateDetailsFragment = gql`
+  fragment GasAndTransactionEstimateDetails on GasAndTransactionEstimate {
+    ...GasEstimateDetails
+    transactionRequest {
+      to
+      data
+    }
+  }
+
+  ${gasEstimateDetails}
+`;
+
 /** Details of how much money and Paypr it will cost to execute a contract */
 export type GasAndPayprEstimateDetails = ApiGasAndPayprEstimateDetails;
 
 export const gasAndPayprEstimateDetailsFragment = gql`
   fragment GasAndPayprEstimateDetails on GasAndPayprEstimate {
-    gasAmount
-    gasCost
+    ...GasAndTransactionEstimateDetails
     payprAmount
     payprBalance
-    balance
-    prepayCharge
+    
+    ${gasAndTransactionEstimateDetailsFragment}
   }
 `;

@@ -48,7 +48,7 @@ gql`
   }
 
   fragment TransferConsumableFromPlayerEstimateDetails on GasEstimate {
-    ...GasEstimateDetails
+    ...GasAndTransactionEstimateDetails
   }
   ${gasAndPayprEstimateDetailsFragment}
 `;

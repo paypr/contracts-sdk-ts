@@ -20,20 +20,42 @@
  */
 
 import gql from 'graphql-tag';
-import { ApiCreatePlayerInput, Sdk } from '../../generated/graphql';
+import { ApiCreateContractTransactionRequestInput, Sdk } from '../../generated/graphql';
+import { ArgumentError } from '../../utils/errors';
 
-export const createPlayer = async (sdk: Sdk, input: ApiCreatePlayerInput) => {
+export interface CreatePlayerOptions {
+  transactionRequest?: ApiCreateContractTransactionRequestInput;
+  signedTransaction?: string;
+}
+
+export const createPlayer = async (
+  sdk: Sdk,
+  name: string,
+  { transactionRequest, signedTransaction }: CreatePlayerOptions,
+) => {
+  if (!transactionRequest && !signedTransaction) {
+    throw new ArgumentError('One of transaction request or signed transaction are required');
+  }
+
   const {
     createPlayer: {
       submission: { id: submissionId },
     },
-  } = await sdk.createPlayer({ input });
+  } = await sdk.createPlayer({
+    name,
+    transactionRequest: transactionRequest || null,
+    signedTransaction: signedTransaction || null,
+  });
   return submissionId;
 };
 
 gql`
-  mutation createPlayer($input: CreatePlayerInput!) {
-    createPlayer(input: $input) {
+  mutation createPlayer(
+    $name: String!
+    $transactionRequest: CreateContractTransactionRequestInput
+    $signedTransaction: String
+  ) {
+    createPlayer(name: $name, transactionRequest: $transactionRequest, signedTransaction: $signedTransaction) {
       submission {
         id
       }
