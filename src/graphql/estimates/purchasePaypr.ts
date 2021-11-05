@@ -21,7 +21,7 @@
 
 import gql from 'graphql-tag';
 import { ApiPurchasePayprEstimateDetails, Sdk } from '../../generated/graphql';
-import { gasEstimateDetailsFragment } from '../gasEstimate';
+import { gasAndTransactionEstimateDetailsFragment } from '../gasEstimate';
 
 /** Estimate of the cost to purchase the Paypr */
 export type PurchasePayprEstimateDetails = ApiPurchasePayprEstimateDetails;
@@ -43,9 +43,9 @@ gql`
   }
 
   fragment PurchasePayprEstimateDetails on PurchasePayprEstimate {
-    ...GasEstimateDetails
+    ...GasAndTransactionEstimateDetails
     payprCost
     totalCost
   }
-  ${gasEstimateDetailsFragment}
+  ${gasAndTransactionEstimateDetailsFragment}
 `;

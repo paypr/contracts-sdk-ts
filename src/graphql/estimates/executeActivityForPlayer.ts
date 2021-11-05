@@ -20,10 +20,14 @@
  */
 
 import gql from 'graphql-tag';
-import { ApiExecuteActivityForPlayerEstimateDetails, Sdk } from '../../generated/graphql';
+import { ApiExecuteActivityForPlayerEstimateDetails, ApiItemInput, Sdk } from '../../generated/graphql';
 import { consumableAmountAndBalanceReferenceFragment, consumableAmountReferenceFragment } from '../consumableAmount';
-import { gasEstimateDetailsFragment } from '../gasEstimate';
-import { ExecuteActivityForPlayerOptions } from '../mutations/executeActivityForPlayer';
+import { gasAndTransactionEstimateDetailsFragment } from '../gasEstimate';
+
+export interface ExecuteActivityForPlayerOptions {
+  /** Items to use when executing the activity (optional) */
+  itemsToUse?: ApiItemInput[];
+}
 
 /** Estimate to execute an activity for a player */
 export type ExecuteActivityForPlayerEstimateDetails = ApiExecuteActivityForPlayerEstimateDetails;
@@ -54,7 +58,7 @@ gql`
   }
 
   fragment ExecuteActivityForPlayerEstimateDetails on ExecuteActivityForPlayerEstimate {
-    ...GasEstimateDetails
+    ...GasAndTransactionEstimateDetails
     consumableAmountsNeeded {
       ...ConsumableAmountAndBalanceReference
     }
@@ -63,7 +67,7 @@ gql`
     }
   }
 
-  ${gasEstimateDetailsFragment}
+  ${gasAndTransactionEstimateDetailsFragment}
   ${consumableAmountReferenceFragment}
   ${consumableAmountAndBalanceReferenceFragment}
 `;

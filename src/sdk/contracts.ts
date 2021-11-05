@@ -39,13 +39,9 @@ import {
   TransferPayprFromContractEstimateDetails,
 } from '../graphql/estimates/transferPayprFromContract';
 import { estimateTransferPayprToContract } from '../graphql/estimates/transferPayprToContract';
-import { GasAndPayprEstimateDetails, GasEstimateDetails } from '../graphql/gasEstimate';
+import { GasAndPayprEstimateDetails, GasAndTransactionEstimateDetails } from '../graphql/gasEstimate';
 import { ItemDetails } from '../graphql/items';
-import { mintConsumableForContract } from '../graphql/mutations/mintConsumableForContract';
-import { transferConsumableFromContract } from '../graphql/mutations/transferConsumableFromContract';
-import { transferConsumableToContract } from '../graphql/mutations/transferConsumableToContract';
-import { transferPayprFromContract } from '../graphql/mutations/transferPayprFromContract';
-import { transferPayprToContract } from '../graphql/mutations/transferPayprToContract';
+import { executeTransaction, ExecuteTransactionOptions } from '../graphql/mutations/executeTransaction';
 
 export interface ContractSdk {
   /**
@@ -110,17 +106,6 @@ export interface ContractSdk {
   ) => Promise<GasAndPayprEstimateDetails>;
 
   /**
-   * Mints the given amount of consumable for the contract
-   *
-   * @param contractId the contract ID
-   * @param consumableContractId the consumable contract ID
-   * @param amount the amount of consumable to mint
-   *
-   * @returns a promise to a submission id
-   */
-  mintConsumable: (contractId: string, consumableContractId: string, amount: number) => Promise<string>;
-
-  /**
    * Estimate how much it would cost to transfer the given amount of consumable to the contract
    *
    * @param contractId the contract ID
@@ -133,18 +118,7 @@ export interface ContractSdk {
     contractId: string,
     consumableContractId: string,
     amount: number,
-  ) => Promise<GasEstimateDetails>;
-
-  /**
-   * Transfer's the given amount of consumable to the contract
-   *
-   * @param contractId the contract ID
-   * @param consumableContractId the consumable contract ID
-   * @param amount the amount of consumable to transfer
-   *
-   * @returns a promise to a submission id
-   */
-  transferConsumableToContract: (contractId: string, consumableContractId: string, amount: number) => Promise<string>;
+  ) => Promise<GasAndTransactionEstimateDetails>;
 
   /**
    * Estimate to transfer the given amount of consumable from the contract.
@@ -162,17 +136,6 @@ export interface ContractSdk {
   ) => Promise<TransferConsumableFromContractEstimateDetails>;
 
   /**
-   * Transfer's the given amount of consumable from the contract.
-   *
-   * @param contractId the contract ID
-   * @param consumableContractId the consumable contract ID
-   * @param amount the amount of consumable to transfer
-   *
-   * @returns a promise to a submission id
-   */
-  transferConsumableFromContract: (contractId: string, consumableContractId: string, amount: number) => Promise<string>;
-
-  /**
    * Estimate how much it would cost to transfer the given amount of Paypr to the contract
    *
    * @param contractId the contract ID
@@ -180,17 +143,7 @@ export interface ContractSdk {
    *
    * @returns a promise to the estimate details
    */
-  estimateTransferPayprToContract: (contractId: string, amount: number) => Promise<GasEstimateDetails>;
-
-  /**
-   * Transfer's the given amount of Paypr to the contract
-   *
-   * @param contractId the contract ID
-   * @param amount the amount of Paypr to transfer
-   *
-   * @returns a promise to a submission id
-   */
-  transferPayprToContract: (contractId: string, amount: number) => Promise<string>;
+  estimateTransferPayprToContract: (contractId: string, amount: number) => Promise<GasAndTransactionEstimateDetails>;
 
   /**
    * Estimate to transfer the given amount of Paypr from the contract.
@@ -206,14 +159,13 @@ export interface ContractSdk {
   ) => Promise<TransferPayprFromContractEstimateDetails>;
 
   /**
-   * Transfer's the given amount of Paypr from the contract.
+   * Executes a transaction on a contract
    *
-   * @param contractId the contract ID
-   * @param amount the amount of Paypr to transfer
+   * @param options either a transaction request or a signed transaction
    *
    * @returns a promise to a submission id
    */
-  transferPayprFromContract: (contractId: string, amount: number) => Promise<string>;
+  executeTransaction: (options: ExecuteTransactionOptions) => Promise<string>;
 }
 
 export const getContractsSdk = (sdk: Sdk): ContractSdk => ({
@@ -231,22 +183,16 @@ export const getContractsSdk = (sdk: Sdk): ContractSdk => ({
 
   estimateMintConsumable: (contractId, consumableContractId, amount) =>
     estimateMintConsumableForContract(sdk, contractId, consumableContractId, amount),
-  mintConsumable: (contractId, consumableContractId, amount) =>
-    mintConsumableForContract(sdk, contractId, consumableContractId, amount),
 
   estimateTransferConsumableToContract: (contractId, consumableContractId, amount) =>
     estimateTransferConsumableToContract(sdk, contractId, consumableContractId, amount),
-  transferConsumableToContract: (contractId, consumableContractId, amount) =>
-    transferConsumableToContract(sdk, contractId, consumableContractId, amount),
 
   estimateTransferConsumableFromContract: (contractId, consumableContractId, amount) =>
     estimateTransferConsumableFromContract(sdk, contractId, consumableContractId, amount),
-  transferConsumableFromContract: (contractId, consumableContractId, amount) =>
-    transferConsumableFromContract(sdk, contractId, consumableContractId, amount),
 
   estimateTransferPayprToContract: (contractId, amount) => estimateTransferPayprToContract(sdk, contractId, amount),
-  transferPayprToContract: (contractId, amount) => transferPayprToContract(sdk, contractId, amount),
 
   estimateTransferPayprFromContract: (contractId, amount) => estimateTransferPayprFromContract(sdk, contractId, amount),
-  transferPayprFromContract: (contractId, amount) => transferPayprFromContract(sdk, contractId, amount),
+
+  executeTransaction: (options) => executeTransaction(sdk, options),
 });

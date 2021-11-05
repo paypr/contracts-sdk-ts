@@ -21,7 +21,7 @@
 
 import gql from 'graphql-tag';
 import { ApiMintItemForPlayerEstimateDetails, Sdk } from '../../generated/graphql';
-import { gasEstimateDetailsFragment } from '../gasEstimate';
+import { gasAndTransactionEstimateDetailsFragment } from '../gasEstimate';
 
 /** Estimate to mint an item for a player */
 export type MintItemForPlayerEstimateDetails = ApiMintItemForPlayerEstimateDetails;
@@ -50,8 +50,8 @@ gql`
   }
 
   fragment MintItemForPlayerEstimateDetails on GasEstimate {
-    ...GasEstimateDetails
+    ...GasAndTransactionEstimateDetails
   }
 
-  ${gasEstimateDetailsFragment}
+  ${gasAndTransactionEstimateDetailsFragment}
 `;

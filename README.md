@@ -53,7 +53,9 @@ All the functionality is available as async functions on the API.
 For example, to create a player, use the following:
 
 ```typescript
-const submissionId: string = await sdk.players.createPlayer({ name: 'Tom Jones' });
+const { transactionRequest } = await sdk.players.estimateCreatePlayer();
+
+const submissionId: string = await sdk.players.createPlayer('Tom Jones', transactionRequest);
 
 const submission: SubmissionDetails = await sdk.submissions.waitForSubmissionDone(submissionId);
 

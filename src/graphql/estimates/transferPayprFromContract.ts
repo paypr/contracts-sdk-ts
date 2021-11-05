@@ -47,7 +47,7 @@ gql`
   }
 
   fragment TransferPayprFromContractEstimateDetails on GasEstimate {
-    ...GasEstimateDetails
+    ...GasAndTransactionEstimateDetails
   }
   ${gasAndPayprEstimateDetailsFragment}
 `;
