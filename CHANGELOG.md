@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.5.0](https://github.com/paypr/contracts-sdk-ts/compare/v0.4.3...v0.5.0) (2021-11-05)
+
+### ⚠ BREAKING CHANGES
+
+- removed old transaction functions
+
+### Features
+
+- [[#45](https://github.com/paypr/contracts-sdk-ts/issues/45)] converted to using generic transactions where possible ([1a7c553](https://github.com/paypr/contracts-sdk-ts/commit/1a7c553c5d753b7ee773d12a2fdfea75a8e2d3bf))
+
 ### [0.4.3](https://github.com/paypr/contracts-sdk-ts/compare/v0.4.2...v0.4.3) (2021-10-22)
 
 ### Bug Fixes
