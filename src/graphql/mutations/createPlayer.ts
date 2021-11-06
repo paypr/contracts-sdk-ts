@@ -20,7 +20,7 @@
  */
 
 import gql from 'graphql-tag';
-import { ApiCreateContractTransactionRequestInput, Sdk } from '../../generated/graphql';
+import { ApiCreateContractTransactionRequestInput, ApiTransactionRequest, Sdk } from '../../generated/graphql';
 import { ArgumentError } from '../../utils/errors';
 
 export interface CreatePlayerOptions {
@@ -43,11 +43,15 @@ export const createPlayer = async (
     },
   } = await sdk.createPlayer({
     name,
-    transactionRequest: transactionRequest || null,
+    transactionRequest: convertToCreateTransactionRequestInput(transactionRequest),
     signedTransaction: signedTransaction || null,
   });
   return submissionId;
 };
+
+const convertToCreateTransactionRequestInput = (
+  transactionRequest?: ApiCreateContractTransactionRequestInput | ApiTransactionRequest,
+): ApiCreateContractTransactionRequestInput | null => (transactionRequest ? { data: transactionRequest.data } : null);
 
 gql`
   mutation createPlayer(
