@@ -36,13 +36,13 @@ Some IDEs and editors have plugins for running Prettier.
 
 ### Linting
 
-This project uses [TSLint](https://palantir.github.io/tslint/). Check linting before checking in:
+This project uses [ESLint](https://eslint.org/). Check linting before checking in:
 
 ```
 npm run lint
 ```
 
-See `tslint.json` for settings.
+See `.eslintrc.yml` for settings.
 
 Many IDEs and editors support TSLint.
 
