@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.5.2](https://github.com/paypr/contracts-sdk-ts/compare/v0.5.1...v0.5.2) (2021-12-08)
+
+### Bug Fixes
+
+- **deps:** update dependency graphql-request to v3 ([f5c3be2](https://github.com/paypr/contracts-sdk-ts/commit/f5c3be24c83ea80520116c2b0f416e76c919217e))
+
 ### [0.5.1](https://github.com/paypr/contracts-sdk-ts/compare/v0.5.0...v0.5.1) (2021-11-06)
 
 ### Bug Fixes
