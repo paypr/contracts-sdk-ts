@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0](https://github.com/paypr/contracts-sdk-ts/compare/v1.0.1...v1.1.0) (2022-08-21)
+
+### Features
+
+- update to latest schema ([98224fc](https://github.com/paypr/contracts-sdk-ts/commit/98224fc7d0ea7b0221f8a25aca5b0beaeead7850))
+
 ### [1.0.1](https://github.com/paypr/contracts-sdk-ts/compare/v1.0.0...v1.0.1) (2022-08-18)
 
 ## [1.0.0](https://github.com/paypr/contracts-sdk-ts/compare/v0.5.2...v1.0.0) (2022-08-18)
