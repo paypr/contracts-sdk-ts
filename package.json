@@ -3,7 +3,7 @@
   "name": "@paypr/contracts-sdk-ts",
   "description": "Contracts SDK for JavaScript and Typescript",
   "license": "MIT",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "homepage": "https://paypr.money/",
   "repository": {
     "type": "git",
