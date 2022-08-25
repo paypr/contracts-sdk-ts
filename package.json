@@ -45,15 +45,15 @@
     "graphql-tag": "2.12.6"
   },
   "devDependencies": {
-    "@graphql-codegen/cli": "2.11.6",
+    "@graphql-codegen/cli": "2.11.7",
     "@graphql-codegen/named-operations-object": "2.3.1",
     "@graphql-codegen/typescript": "2.7.3",
     "@graphql-codegen/typescript-graphql-request": "4.5.3",
     "@graphql-codegen/typescript-operations": "2.5.3",
     "@types/jest": "28.1.8",
     "@types/node": "16.11.56",
-    "@typescript-eslint/eslint-plugin": "5.34.0",
-    "@typescript-eslint/parser": "5.34.0",
+    "@typescript-eslint/eslint-plugin": "5.35.1",
+    "@typescript-eslint/parser": "5.35.1",
     "cz-conventional-changelog": "3.3.0",
     "eslint": "8.22.0",
     "eslint-plugin-import": "2.26.0",
