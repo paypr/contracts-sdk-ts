@@ -51,7 +51,7 @@
     "@graphql-codegen/typescript-graphql-request": "4.5.4",
     "@graphql-codegen/typescript-operations": "2.5.3",
     "@types/jest": "28.1.8",
-    "@types/node": "16.11.57",
+    "@types/node": "16.11.58",
     "@typescript-eslint/eslint-plugin": "5.36.2",
     "@typescript-eslint/parser": "5.36.2",
     "cz-conventional-changelog": "3.3.0",
