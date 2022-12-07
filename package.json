@@ -45,11 +45,11 @@
     "graphql-tag": "2.12.6"
   },
   "devDependencies": {
-    "@graphql-codegen/cli": "2.15.0",
+    "@graphql-codegen/cli": "2.16.1",
     "@graphql-codegen/named-operations-object": "2.3.1",
-    "@graphql-codegen/typescript": "2.8.3",
+    "@graphql-codegen/typescript": "2.8.5",
     "@graphql-codegen/typescript-graphql-request": "4.5.8",
-    "@graphql-codegen/typescript-operations": "2.5.8",
+    "@graphql-codegen/typescript-operations": "2.5.10",
     "@types/jest": "29.2.4",
     "@types/node": "18.11.9",
     "@typescript-eslint/eslint-plugin": "5.45.1",
